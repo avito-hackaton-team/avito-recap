@@ -655,6 +655,7 @@ components:
           example: "2025-02-11T19:02:00Z"
 
     SlideType:
+      x-ogen-name: RecapSlideType
       type: string
       enum:
         - intro

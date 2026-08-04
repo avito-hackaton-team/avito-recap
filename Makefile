@@ -10,12 +10,17 @@ GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
 GOLANGCI_CONFIG := $(CURDIR)/.golangci.yml
 GOOSE_VERSION := v3.27.1
 GOOSE := $(BIN_DIR)/goose
+OGEN_VERSION := v1.23.0
+OGEN := $(BIN_DIR)/ogen
 
 ENV_FILE := $(CURDIR)/.env
 MIGRATIONS_DIR := $(CURDIR)/backend/recap/migrations/migrations
+OPENAPI_SPEC := $(CURDIR)/backend/recap/api/recap/v1/openapi.yaml
+GENERATED_API_DIR := $(CURDIR)/backend/recap/internal/controller/http/api
 
 .PHONY: help tools require-backend require-env lint-config format lint vet test test-race \
-	test-integration tidy tidy-check check up down logs migrate-up migrate-down migrate-status
+	test-integration tidy tidy-check generate generate-api check up down logs \
+	migrate-up migrate-down migrate-status
 
 help:
 	@echo "Available commands:"
@@ -28,6 +33,7 @@ help:
 	@echo "  make test-integration Run integration tests when present"
 	@echo "  make tidy          Synchronize Go dependencies"
 	@echo "  make tidy-check    Check whether go.mod and go.sum are tidy"
+	@echo "  make generate      Generate code from project contracts"
 	@echo "  make check         Run all required Go checks"
 	@echo "  make up            Start local infrastructure"
 	@echo "  make down          Stop local infrastructure"
@@ -46,7 +52,12 @@ $(GOOSE):
 	GOBIN=$(BIN_DIR) go install \
 		github.com/pressly/goose/v3/cmd/goose@$(GOOSE_VERSION)
 
-tools: $(GOLANGCI_LINT) $(GOOSE)
+$(OGEN):
+	mkdir -p $(BIN_DIR)
+	GOBIN=$(BIN_DIR) go install \
+		github.com/ogen-go/ogen/cmd/ogen@$(OGEN_VERSION)
+
+tools: $(GOLANGCI_LINT) $(GOOSE) $(OGEN)
 
 require-backend:
 	@test -f $(BACKEND_GO_MOD) || { \
@@ -102,6 +113,11 @@ tidy: require-backend
 
 tidy-check: require-backend
 	cd $(BACKEND_DIR) && go mod tidy -diff
+
+generate: generate-api
+
+generate-api: require-backend $(OGEN)
+	$(OGEN) --target $(GENERATED_API_DIR) --package api --clean $(OPENAPI_SPEC)
 
 check: lint-config lint vet tidy-check test-race test-integration
 
