@@ -138,10 +138,7 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 code: not_enough_activity
-                message: За 2025 год слишком мало активности для генерации итогов
-                details:
-                  - field: year
-                    message: минимум 5 действий за год
+                message: За 2025 год у профиля меньше 5 действий, генерация невозможна
                 requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f98
         "422":
           description: Тело запроса синтаксически корректно, но значения недопустимы
@@ -151,10 +148,7 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 code: validation_error
-                message: Год вне поддерживаемого диапазона
-                details:
-                  - field: year
-                    message: должен быть в диапазоне 2015..2026
+                message: "Поле year вне диапазона 2015..2026"
                 requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f97
         "429":
           $ref: "#/components/responses/TooManyRequests"
@@ -260,10 +254,7 @@ components:
             $ref: "#/components/schemas/Error"
           example:
             code: bad_request
-            message: Некорректный идентификатор recap
-            details:
-              - field: id
-                message: должен быть UUID
+            message: Поле id не является UUID
             requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f95
 
     NotFound:
@@ -331,30 +322,15 @@ components:
           $ref: "#/components/schemas/ErrorCode"
         message:
           type: string
-          description: Человекочитаемое сообщение, пригодное для показа в UI
+          description: |
+            Пояснение для разработчика: логи, отладка, Sentry.
+            Не предназначено для показа пользователю — текст в UI фронт
+            подбирает сам по значению `code`.
           example: Профиль не найден
-        details:
-          type: array
-          description: Пофайловые/пополевые подробности, если ошибка валидационная
-          items:
-            $ref: "#/components/schemas/ErrorDetail"
         requestId:
           allOf:
             - $ref: "#/components/schemas/Uuid"
           description: Идентификатор запроса для поиска в логах
-
-    ErrorDetail:
-      type: object
-      required:
-        - field
-        - message
-      properties:
-        field:
-          type: string
-          example: year
-        message:
-          type: string
-          example: обязательное поле
 
     ErrorCode:
       type: string
