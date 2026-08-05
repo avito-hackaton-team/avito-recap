@@ -485,11 +485,9 @@ components:
         code:
           type: string
           enum:
-            - treasure_hunter
             - collector
             - dealmaker
             - negotiator
-            - minimalist
             - explorer
           example: treasure_hunter
         title:
