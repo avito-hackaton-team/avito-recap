@@ -16,3 +16,8 @@ type Recap struct {
 	Slides      json.RawMessage
 	GeneratedAt time.Time
 }
+
+type RecapCreation struct {
+	ID      uuid.UUID
+	Created bool
+}

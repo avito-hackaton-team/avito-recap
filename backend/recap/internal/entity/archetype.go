@@ -31,7 +31,7 @@ const (
 )
 
 type ArchetypeReason struct {
-	Metric      string
-	Value       *string
+	Metric      Metric
+	Value       string
 	Explanation string
 }
