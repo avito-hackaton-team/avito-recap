@@ -23,7 +23,7 @@ profile.cov
 /node_modules/
 
 # Generated Go code
-/backend/recap/generated/recapapi/
+/backend/recap/generated/
 
 # Go workspace file
 go.work
