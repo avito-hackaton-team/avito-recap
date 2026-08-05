@@ -22,6 +22,9 @@ profile.cov
 # vendor/
 /node_modules/
 
+# Generated Go code
+/backend/recap/generated/recapapi/
+
 # Go workspace file
 go.work
 go.work.sum

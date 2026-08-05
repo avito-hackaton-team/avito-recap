@@ -16,7 +16,7 @@ OGEN := $(BIN_DIR)/ogen
 ENV_FILE := $(CURDIR)/.env
 MIGRATIONS_DIR := $(CURDIR)/backend/recap/migrations/migrations
 OPENAPI_SPEC := $(CURDIR)/backend/recap/api/recap/v1/openapi.yaml
-GENERATED_API_DIR := $(CURDIR)/backend/recap/internal/controller/http/api
+GENERATED_API_DIR := $(CURDIR)/backend/recap/generated/recapapi
 
 .PHONY: help tools require-backend require-env lint-config format lint vet test test-race \
 	test-integration tidy tidy-check generate generate-api check up down logs \
@@ -117,7 +117,7 @@ tidy-check: require-backend
 generate: generate-api
 
 generate-api: require-backend $(OGEN)
-	$(OGEN) --target $(GENERATED_API_DIR) --package api --clean $(OPENAPI_SPEC)
+	$(OGEN) --target $(GENERATED_API_DIR) --package recapapi --clean $(OPENAPI_SPEC)
 
 check: lint-config lint vet tidy-check test-race test-integration
 
