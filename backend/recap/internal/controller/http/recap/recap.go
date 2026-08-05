@@ -4,9 +4,10 @@ package recap
 import (
 	"context"
 
-	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+
+	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
 )
 
 type (
