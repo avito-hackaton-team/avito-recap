@@ -16,6 +16,18 @@ const (
 	ArchetypeExplorer   ArchetypeName = "explorer"
 )
 
+func (a ArchetypeName) Valid() bool {
+	switch a {
+	case ArchetypeCollector,
+		ArchetypeDealmaker,
+		ArchetypeNegotiator,
+		ArchetypeExplorer:
+		return true
+	default:
+		return false
+	}
+}
+
 // Metric is a scoring input. The values mirror the MetricCode enum in openapi.yaml.
 type Metric string
 
@@ -29,6 +41,22 @@ const (
 	MetricCategories Metric = "categories"
 	MetricListings   Metric = "listings"
 )
+
+func (m Metric) Valid() bool {
+	switch m {
+	case MetricActiveDays,
+		MetricViews,
+		MetricFavorites,
+		MetricPurchases,
+		MetricSales,
+		MetricMessages,
+		MetricCategories,
+		MetricListings:
+		return true
+	default:
+		return false
+	}
+}
 
 type ArchetypeReason struct {
 	Metric      Metric

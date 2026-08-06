@@ -1,4 +1,4 @@
-package recap
+package activity
 
 import (
 	"time"
@@ -11,10 +11,7 @@ type Repository struct {
 	opTimeout time.Duration
 }
 
-func New(
-	pool *pgxpool.Pool,
-	opTimeout time.Duration,
-) *Repository {
+func New(pool *pgxpool.Pool, opTimeout time.Duration) *Repository {
 	return &Repository{
 		pool:      pool,
 		opTimeout: opTimeout,

@@ -21,6 +21,63 @@ func TestYearPeriodIsHalfOpen(t *testing.T) {
 	}
 }
 
+func TestPeriodValid(t *testing.T) {
+	t.Parallel()
+
+	from := time.Date(2025, time.January, 1, 0, 0, 0, 0, time.UTC)
+	to := from.AddDate(1, 0, 0)
+
+	tests := []struct {
+		name   string
+		period entity.Period
+		want   bool
+	}{
+		{
+			name:   "valid period",
+			period: entity.Period{From: from, To: to},
+			want:   true,
+		},
+		{
+			name:   "equal boundaries",
+			period: entity.Period{From: from, To: from},
+			want:   false,
+		},
+		{
+			name:   "reversed boundaries",
+			period: entity.Period{From: to, To: from},
+			want:   false,
+		},
+		{
+			name:   "zero start",
+			period: entity.Period{To: to},
+			want:   false,
+		},
+		{
+			name:   "zero end",
+			period: entity.Period{From: from},
+			want:   false,
+		},
+		{
+			name: "same instant in different locations",
+			period: entity.Period{
+				From: from,
+				To:   from.In(time.FixedZone("UTC+5", 5*60*60)),
+			},
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := tt.period.Valid(); got != tt.want {
+				t.Errorf("Period.Valid() = %t, want %t", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSeasonsCoverTheWholeYearOnce(t *testing.T) {
 	t.Parallel()
 
@@ -52,5 +109,27 @@ func TestWinterIsSplitInTwoRanges(t *testing.T) {
 
 	if windows[0].Ranges[1].From.Month() != time.December {
 		t.Errorf("expected the second winter range to start in December, got %s", windows[0].Ranges[1].From)
+	}
+}
+
+func TestUserActivityTotalActionsExcludesDerivedMetrics(t *testing.T) {
+	t.Parallel()
+
+	activity := entity.UserActivity{
+		ActiveDays:         100,
+		Views:              1,
+		UniqueListingsSeen: 200,
+		Favorites:          2,
+		Purchases:          3,
+		Sales:              4,
+		MessagesAsBuyer:    5,
+		MessagesAsSeller:   6,
+		CategoriesTouched:  300,
+		ListingsCreated:    7,
+	}
+
+	const want int64 = 28
+	if got := activity.TotalActions(); got != want {
+		t.Errorf("UserActivity.TotalActions() = %d, want %d", got, want)
 	}
 }

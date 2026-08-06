@@ -12,6 +12,10 @@ type Period struct {
 	To   time.Time
 }
 
+func (p Period) Valid() bool {
+	return !p.From.IsZero() && !p.To.IsZero() && p.From.Before(p.To)
+}
+
 // YearPeriod returns the UTC calendar year as a period.
 func YearPeriod(year int) Period {
 	from := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
@@ -124,6 +128,15 @@ type UserActivity struct {
 // Messages returns the total number of messages in both roles.
 func (a UserActivity) Messages() int64 {
 	return a.MessagesAsBuyer + a.MessagesAsSeller
+}
+
+func (a UserActivity) TotalActions() int64 {
+	return a.Views +
+		a.Favorites +
+		a.Purchases +
+		a.Sales +
+		a.Messages() +
+		a.ListingsCreated
 }
 
 // IsEmpty reports whether there is nothing to build a recap from.
