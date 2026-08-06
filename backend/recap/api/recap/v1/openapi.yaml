@@ -43,15 +43,6 @@ paths:
       description: |
         Возвращает набор заранее подготовленных профилей, на которых
         демонстрируется работа генерации. Список небольшой и постраничности не требует.
-      parameters:
-        - name: year
-          in: query
-          required: false
-          description: |
-            Год, для которого проверяется наличие уже сгенерированного recap
-            (влияет только на поле `recap` в ответе). По умолчанию — предыдущий год.
-          schema:
-            $ref: "#/components/schemas/Year"
       responses:
         "200":
           description: Список профилей
@@ -74,12 +65,6 @@ paths:
                     avatarUrl: https://cdn.example.com/avatars/018f4c1e.png
                     registeredAt: "2019-03-14T10:12:00Z"
                     hint: Активный покупатель техники
-                    recap:
-                      id: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1fa0
-                      year: 2025
-                      status: ready
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -140,16 +125,6 @@ paths:
                 code: not_enough_activity
                 message: За 2025 год у профиля меньше 5 действий, генерация невозможна
                 requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f98
-        "422":
-          description: Тело запроса синтаксически корректно, но значения недопустимы
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: validation_error
-                message: "Поле year вне диапазона 2015..2026"
-                requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f97
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "500":
@@ -336,8 +311,8 @@ components:
       type: string
       description: |
         Машиночитаемый код ошибки:
-          * `bad_request` — невалидный JSON, типы или формат идентификатора;
-          * `validation_error` — значения полей вне допустимых границ;
+          * `bad_request` — невалидный JSON, типы, формат идентификатора или
+            значение вне границ схемы (проверяется сгенерированным кодом до хендлера);
           * `profile_not_found` — профиль не существует;
           * `recap_not_found` — recap не существует;
           * `not_enough_activity` — за год недостаточно активности для генерации;
@@ -346,7 +321,6 @@ components:
           * `internal_error` — необработанная ошибка сервиса.
       enum:
         - bad_request
-        - validation_error
         - profile_not_found
         - recap_not_found
         - not_enough_activity
@@ -381,25 +355,6 @@ components:
           type: string
           description: Короткое описание профиля для витрины выбора («что за пользователь»)
           example: Активный покупатель техники
-        recap:
-          allOf:
-            - $ref: "#/components/schemas/RecapRef"
-          nullable: true
-          description: Ссылка на уже сгенерированный recap за запрошенный год, если он есть
-
-    RecapRef:
-      type: object
-      required:
-        - id
-        - year
-        - status
-      properties:
-        id:
-          $ref: "#/components/schemas/Uuid"
-        year:
-          $ref: "#/components/schemas/Year"
-        status:
-          $ref: "#/components/schemas/RecapStatus"
 
     RecapStatus:
       type: string
@@ -507,29 +462,35 @@ components:
       type: object
       required:
         - metric
+        - value
         - explanation
       properties:
         metric:
           $ref: "#/components/schemas/MetricCode"
         value:
           type: string
-          description: Значение метрики в человекочитаемом виде
-          example: "1248 просмотров"
+          description: |
+            Значение метрики. Строка, а не число: для `favorite_category`
+            и `interests_shift` значение нечисловое.
+          example: "1248"
         explanation:
           type: string
           example: Это в 3 раза больше, чем у среднего пользователя площадки
 
     MetricCode:
       type: string
+      description: |
+        Метрики, из которых складывается скоринг архетипа.
+        Список совпадает с константами `entity.Metric` в коде.
       enum:
         - active_days
         - views
         - favorites
-        - favorite_category
         - purchases
         - sales
         - messages
-        - interests_shift
+        - categories
+        - listings
 
     Badge:
       type: object

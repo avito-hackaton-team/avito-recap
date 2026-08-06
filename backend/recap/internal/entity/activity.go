@@ -113,6 +113,12 @@ type UserActivity struct {
 	SalesAmount        int64
 	MessagesAsBuyer    int64
 	MessagesAsSeller   int64
+	// CategoriesTouched is how many distinct categories the user met during the
+	// year. It separates a broad explorer from someone digging in one category.
+	CategoriesTouched int64
+	// ListingsCreated counts published listings, not closed deals: a user who
+	// posted twenty listings and sold two still behaves like a seller.
+	ListingsCreated int64
 }
 
 // Messages returns the total number of messages in both roles.
