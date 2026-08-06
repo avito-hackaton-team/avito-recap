@@ -1,10 +1,16 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Profile struct {
-	ID      uuid.UUID
-	Name    string
-	Surname string
-	Hint    string
+	ID           uuid.UUID
+	Name         string
+	Surname      string
+	AvatarURL    *string
+	Hint         string
+	RegisteredAt time.Time
 }
