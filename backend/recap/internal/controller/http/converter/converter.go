@@ -71,6 +71,6 @@ func ConvertEntityArchetypeToAPIArchetype(archetype entity.Archetype) recapapi.A
 	}
 }
 
-func ConvertIntToAPIYear(year int) recapapi.Year {
+func ConvertIntToAPIYear(year int32) recapapi.Year {
 	return recapapi.Year(year)
 }

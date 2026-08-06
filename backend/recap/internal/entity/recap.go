@@ -11,7 +11,7 @@ import (
 type Recap struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
-	Year        int
+	Year        int32
 	Archetype   Archetype
 	Slides      json.RawMessage
 	GeneratedAt time.Time

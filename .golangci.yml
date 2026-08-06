@@ -41,7 +41,6 @@ linters:
     - nolintlint
     - nosprintfhostport
     - predeclared
-    - revive
     - unconvert
     - unparam
     - wastedassign

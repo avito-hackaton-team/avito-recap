@@ -5,11 +5,11 @@ import (
 	"context"
 	"errors"
 
-	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/controller/http/converter"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/generated/recapapi"
+	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/controller/http/converter"
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
 )
 
