@@ -1,4 +1,4 @@
-FROM golang:1.26.5-alpine AS builder
+FROM golang:1.26.5-trixie AS builder
 
 WORKDIR /app
 
@@ -10,11 +10,13 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -o /out/recap ./cmd/app \
     && CGO_ENABLED=0 go build -trimpath -o /out/seed ./cmd/seed
 
-FROM alpine:3.24
+FROM debian:13-slim
 
-RUN apk add --no-cache ca-certificates \
-    && addgroup -S app \
-    && adduser -S app -G app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system app \
+    && useradd --system --gid app --no-create-home app
 
 WORKDIR /app
 
@@ -25,4 +27,4 @@ USER app
 
 EXPOSE 8080
 
-ENTRYPOINT ["./recap"]
+ENTRYPOINT ["/app/recap"]

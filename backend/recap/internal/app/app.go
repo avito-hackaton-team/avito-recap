@@ -48,9 +48,6 @@ func Run(
 	if err != nil {
 		return fmt.Errorf("listen http: %w", err)
 	}
-	defer func() {
-		_ = listener.Close()
-	}()
 
 	server := &http.Server{
 		Handler:           handler,

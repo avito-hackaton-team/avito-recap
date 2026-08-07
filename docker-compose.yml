@@ -35,7 +35,7 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
 
-    entrypoint: ["./seed"]
+    entrypoint: ["/app/seed"]
     command: ["--year=2025", "--seed=20250807"]
 
     depends_on:
