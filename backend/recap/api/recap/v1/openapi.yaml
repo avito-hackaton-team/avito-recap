@@ -404,11 +404,6 @@ components:
           $ref: "#/components/schemas/RecapStatus"
         archetype:
           $ref: "#/components/schemas/Archetype"
-        badges:
-          type: array
-          description: Все бейджи, полученные пользователем за год
-          items:
-            $ref: "#/components/schemas/Badge"
         slides:
           type: array
           description: Слайды в порядке показа
@@ -697,19 +692,6 @@ components:
               minimum: 0
               maximum: 366
               example: 243
-            percentile:
-              type: integer
-              format: int32
-              minimum: 0
-              maximum: 100
-              description: Процент пользователей, которых обошёл этот профиль
-              example: 82
-            busiestMonth:
-              type: integer
-              format: int32
-              minimum: 1
-              maximum: 12
-              example: 11
 
     ViewsSlide:
       allOf:
@@ -723,14 +705,6 @@ components:
               format: int64
               minimum: 0
               example: 1248
-            uniqueListings:
-              type: integer
-              format: int64
-              minimum: 0
-              example: 934
-            topCategoryTitle:
-              type: string
-              example: Электроника
 
     FavoritesSlide:
       allOf:
@@ -807,9 +781,6 @@ components:
               format: int32
               minimum: 0
               example: 11
-            topCategoryTitle:
-              type: string
-              example: Хобби и отдых
             badge:
               allOf:
                 - $ref: "#/components/schemas/Badge"
@@ -832,12 +803,6 @@ components:
                 - $ref: "#/components/schemas/AmountRange"
               nullable: true
               description: Приблизительная сумма продаж — только диапазон
-            fastestDealDays:
-              type: integer
-              format: int32
-              minimum: 0
-              description: За сколько дней ушло самое быстрое объявление
-              example: 1
             badge:
               allOf:
                 - $ref: "#/components/schemas/Badge"
@@ -856,18 +821,6 @@ components:
               minimum: 0
               description: Количество сообщений. Содержимое переписок не раскрывается никогда
               example: 342
-            chats:
-              type: integer
-              format: int32
-              minimum: 0
-              example: 76
-            asBuyerShare:
-              type: integer
-              format: int32
-              minimum: 0
-              maximum: 100
-              description: Доля сообщений, отправленных в роли покупателя, %
-              example: 64
 
     InterestsSlide:
       allOf:
@@ -929,15 +882,44 @@ components:
         - $ref: "#/components/schemas/SlideBase"
         - type: object
           properties:
-            badges:
+            stats:
               type: array
+              description: Плитки с итоговыми числами года
               items:
-                $ref: "#/components/schemas/Badge"
+                $ref: "#/components/schemas/StatTile"
             actions:
               type: array
               description: Что предлагается сделать после просмотра итогов
               items:
                 $ref: "#/components/schemas/Cta"
+
+    StatTile:
+      type: object
+      description: |
+        Одно число финального экрана. Иконку клиент выбирает по `code`,
+        подпись приходит готовой, потому что она согласуется с числом.
+      required:
+        - code
+        - value
+        - label
+      properties:
+        code:
+          type: string
+          enum:
+            - active_days
+            - views
+            - favorites
+            - messages
+            - seasons
+          example: messages
+        value:
+          type: integer
+          format: int64
+          minimum: 0
+          example: 128
+        label:
+          type: string
+          example: сообщений отправлено
 
     ShareRecapRequest:
       type: object
