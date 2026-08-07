@@ -3,6 +3,7 @@ module github.com/avito-hackaton-team/avito-recap/backend/recap
 go 1.26.5
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
