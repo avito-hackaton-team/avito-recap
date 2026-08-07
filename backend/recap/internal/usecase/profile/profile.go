@@ -5,15 +5,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
-
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
 )
 
 type profileRepository interface {
 	List(ctx context.Context) ([]entity.Profile, error)
-
-	GetByID(ctx context.Context, id uuid.UUID) (entity.Profile, error)
 }
 
 type profileService struct {
