@@ -144,12 +144,18 @@ func (s *recapServer) errorBody(
 	cause error,
 ) recapapi.Error {
 	requestID := uuid.New()
-
-	s.logger.Error(operation,
+	logger := s.logger.WithOptions(zap.AddCallerSkip(1))
+	fields := []zap.Field{
 		zap.Error(cause),
 		zap.String("code", string(code)),
 		zap.String("requestId", requestID.String()),
-	)
+	}
+
+	if code == recapapi.ErrorCodeInternalError {
+		logger.Error(operation, fields...)
+	} else {
+		logger.Warn(operation, fields...)
+	}
 
 	return recapapi.Error{
 		Code:      code,
