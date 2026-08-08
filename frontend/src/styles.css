@@ -749,6 +749,30 @@ body {
 }
 
 /* Финальный экран */
+.final__top {
+  align-items: center;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr);
+}
+
+.final__mascot {
+  filter: drop-shadow(0 24px 48px rgba(124, 58, 237, 0.5));
+  justify-self: center;
+  max-width: 340px;
+  width: 100%;
+}
+
+@media (max-width: 1080px) {
+  .final__top {
+    grid-template-columns: 1fr;
+  }
+
+  .final__mascot {
+    max-width: 220px;
+  }
+}
+
 .final {
   display: grid;
   gap: 28px;

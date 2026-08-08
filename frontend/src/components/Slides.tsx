@@ -277,11 +277,15 @@ export function SlideView({ slide, onShare }: { slide: Slide; onShare: () => voi
     case 'final':
       return (
         <section className="slide slide--wide">
-          <h2 className="hero">
-            Вот это год!
-            <br />
-            <span className="accent">{slide.subtitle ?? 'Вы всё делали по-своему'} ♡</span>
-          </h2>
+          <div className="final__top">
+            <h2 className="hero">
+              Вот это год!
+              <br />
+              <span className="accent">{slide.subtitle ?? 'Вы всё делали по-своему'} ♡</span>
+            </h2>
+
+            <img className="final__mascot" src={artUrl('mascot')} alt="" />
+          </div>
 
           <div className="final">
             {slide.stats?.length ? (
