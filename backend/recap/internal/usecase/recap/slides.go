@@ -197,10 +197,10 @@ var storyboard = []slideBuilder{
 	buildActiveDaysSlide,
 	buildViewsSlide,
 	buildFavoritesSlide,
+	buildCategorySlide,
 	buildPurchasesSlide,
 	buildSalesSlide,
 	buildMessagesSlide,
-	buildCategorySlide,
 	buildInterestsSlide,
 	buildArchetypeSlide,
 	buildFinalSlide,
@@ -526,24 +526,7 @@ func interestsSummary(seasons []seasonLeader) string {
 		return "Весь год вас держала одна тема: " + seasons[0].category.Title
 	}
 
-	parts := make([]string, 0, len(seasons))
-	for _, leader := range seasons {
-		parts = append(parts, fmt.Sprintf("%s — %s", seasonWords[leader.season], leader.category.Title))
-	}
-
-	return capitalize(strings.Join(parts, ", "))
-}
-
-// capitalize uppercases the first letter. Slicing by byte would cut a Cyrillic
-// rune in half, so the first rune is decoded before being changed.
-func capitalize(text string) string {
-	if text == "" {
-		return text
-	}
-
-	first, size := utf8.DecodeRuneInString(text)
-
-	return string(unicode.ToUpper(first)) + text[size:]
+	return "Ваши интересы менялись вместе с сезонами"
 }
 
 func salesAmountRange(amountKopecks int64) *amountRange {
