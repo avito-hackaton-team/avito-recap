@@ -6,8 +6,6 @@ import (
 	"math"
 	"strings"
 	"time"
-	"unicode"
-	"unicode/utf8"
 
 	"github.com/google/uuid"
 
@@ -499,13 +497,6 @@ func listingRefsOf(listings []entity.ListingPreview) []listingRef {
 	}
 
 	return result
-}
-
-var seasonWords = map[entity.Season]string{
-	entity.SeasonWinter: "зимой",
-	entity.SeasonSpring: "весной",
-	entity.SeasonSummer: "летом",
-	entity.SeasonAutumn: "осенью",
 }
 
 func interestsSummary(seasons []seasonLeader) string {
