@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"math"
 	"strings"
-	"unicode"
-	"unicode/utf8"
 
 	"github.com/google/uuid"
 
@@ -458,13 +456,6 @@ func subcategoryRefOf(category entity.CategoryScore) *categoryRef {
 	return &categoryRef{ID: category.Subcategory.ID, Title: category.Subcategory.Title}
 }
 
-var seasonWords = map[entity.Season]string{
-	entity.SeasonWinter: "зимой",
-	entity.SeasonSpring: "весной",
-	entity.SeasonSummer: "летом",
-	entity.SeasonAutumn: "осенью",
-}
-
 func interestsSummary(seasons []seasonLeader) string {
 	if len(seasons) == 0 {
 		return ""
@@ -484,16 +475,6 @@ func interestsSummary(seasons []seasonLeader) string {
 	}
 
 	return "Ваши интересы менялись вместе с сезонами"
-}
-
-func capitalize(text string) string {
-	if text == "" {
-		return text
-	}
-
-	first, size := utf8.DecodeRuneInString(text)
-
-	return string(unicode.ToUpper(first)) + text[size:]
 }
 
 func salesAmountRange(amountKopecks int64) *amountRange {
