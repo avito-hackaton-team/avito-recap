@@ -1,0 +1,53 @@
+<svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="body" x1="60" y1="80" x2="270" y2="290" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A78BFA" />
+      <stop offset="1" stop-color="#6D28D9" />
+    </linearGradient>
+    <linearGradient id="page" x1="70" y1="130" x2="250" y2="285" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#E4E1F5" />
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#C4B5FD" />
+      <stop offset="1" stop-color="#7C3AED" />
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#4C1D95" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <g filter="url(#soft)">
+    <!-- корпус -->
+    <rect x="52" y="72" width="216" height="196" rx="26" fill="url(#body)" />
+    <!-- страница -->
+    <rect x="68" y="118" width="184" height="134" rx="16" fill="url(#page)" />
+    <!-- нижняя грань для объёма -->
+    <path d="M52 236h216v6a26 26 0 0 1-26 26H78a26 26 0 0 1-26-26v-6z" fill="#4C1D95" opacity="0.35" />
+  </g>
+
+  <!-- клетки -->
+  <g fill="#C4B5FD">
+    <rect x="86" y="138" width="26" height="22" rx="7" />
+    <rect x="124" y="138" width="26" height="22" rx="7" />
+    <rect x="162" y="138" width="26" height="22" rx="7" />
+    <rect x="200" y="138" width="26" height="22" rx="7" />
+    <rect x="86" y="172" width="26" height="22" rx="7" />
+    <rect x="124" y="172" width="26" height="22" rx="7" />
+    <rect x="200" y="172" width="26" height="22" rx="7" />
+    <rect x="86" y="206" width="26" height="22" rx="7" />
+    <rect x="124" y="206" width="26" height="22" rx="7" />
+    <rect x="162" y="206" width="26" height="22" rx="7" />
+  </g>
+
+  <!-- отмеченный день -->
+  <rect x="162" y="172" width="26" height="22" rx="7" fill="#22C55E" />
+
+  <!-- кольца -->
+  <g stroke="url(#ring)" stroke-width="10" stroke-linecap="round">
+    <path d="M104 46v40" />
+    <path d="M216 46v40" />
+  </g>
+  <circle cx="104" cy="44" r="9" fill="#EDE9FE" />
+  <circle cx="216" cy="44" r="9" fill="#EDE9FE" />
+</svg>

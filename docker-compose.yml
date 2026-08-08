@@ -1,4 +1,19 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_RECAP_YEAR: "${RECAP_YEAR:-2025}"
+
+    ports:
+      - "${FRONTEND_BIND_HOST:-127.0.0.1}:${FRONTEND_EXTERNAL_PORT:-3000}:80"
+
+    depends_on:
+      - recap
+
+    restart: unless-stopped
+
   recap:
     build:
       context: ./backend/recap
