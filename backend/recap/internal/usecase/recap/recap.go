@@ -50,12 +50,30 @@ type (
 	profileRepository interface {
 		GetByID(ctx context.Context, id uuid.UUID) (entity.Profile, error)
 	}
+
+	listingRepository interface {
+		ListOldestActiveFavorites(
+			ctx context.Context,
+			userID uuid.UUID,
+			period entity.Period,
+			limit int,
+		) ([]entity.FavoriteListingPreview, error)
+
+		ListCategoryRecommendations(
+			ctx context.Context,
+			userID uuid.UUID,
+			categoryID uuid.UUID,
+			preferredSubcategoryID *uuid.UUID,
+			limit int,
+		) ([]entity.ListingPreview, error)
+	}
 )
 
 type recapService struct {
 	activityRepository activityRepository
 	recapRepository    recapRepository
 	profileRepository  profileRepository
+	listingRepository  listingRepository
 	categoryWeights    CategoryWeights
 }
 
@@ -63,11 +81,13 @@ func NewRecapService(
 	activityRepository activityRepository,
 	recapRepository recapRepository,
 	profileRepository profileRepository,
+	listingRepository listingRepository,
 ) *recapService {
 	return &recapService{
 		activityRepository: activityRepository,
 		recapRepository:    recapRepository,
 		profileRepository:  profileRepository,
+		listingRepository:  listingRepository,
 		categoryWeights:    DefaultCategoryWeights,
 	}
 }
@@ -77,6 +97,12 @@ func (s *recapService) Create(
 	profileID uuid.UUID,
 	year int,
 ) (entity.RecapCreation, error) {
+	if err := ctx.Err(); err != nil {
+		return entity.RecapCreation{}, fmt.Errorf("create recap: %w", err)
+	}
+	if profileID == uuid.Nil {
+		return entity.RecapCreation{}, fmt.Errorf("create recap: %w", entity.ErrProfileIDRequired)
+	}
 	if year < minRecapYear || year > maxRecapYear {
 		return entity.RecapCreation{}, fmt.Errorf("create recap: year %d is out of range", year)
 	}
@@ -108,6 +134,13 @@ func (s *recapService) Create(
 }
 
 func (s *recapService) Get(ctx context.Context, recapID uuid.UUID) (entity.Recap, error) {
+	if err := ctx.Err(); err != nil {
+		return entity.Recap{}, fmt.Errorf("get recap: %w", err)
+	}
+	if recapID == uuid.Nil {
+		return entity.Recap{}, fmt.Errorf("get recap: %w", entity.ErrRecapIDRequired)
+	}
+
 	recap, err := s.recapRepository.GetByID(ctx, recapID)
 	if err != nil {
 		return entity.Recap{}, fmt.Errorf("get recap: %w", err)
@@ -137,9 +170,20 @@ func (s *recapService) buildRecap(
 		)
 	}
 
-	categoryActivity, err := s.activityRepository.ListActivityByCategories(ctx, profileID, period)
+	var oldestFavorite *entity.FavoriteListingPreview
+	if activity.FavoritesActive > 0 {
+		favorite, found, favoriteErr := s.oldestActiveFavorite(ctx, profileID, period)
+		if favoriteErr != nil {
+			return entity.Recap{}, favoriteErr
+		}
+		if found {
+			oldestFavorite = &favorite
+		}
+	}
+
+	categoryData, err := s.loadCategoryRecap(ctx, profileID, period)
 	if err != nil {
-		return entity.Recap{}, fmt.Errorf("list activity by categories: %w", err)
+		return entity.Recap{}, err
 	}
 
 	seasons, err := s.seasonLeaders(ctx, profileID, year)
@@ -155,11 +199,13 @@ func (s *recapService) buildRecap(
 	archetype := DetectArchetype(activity, totalCategories)
 
 	slides, err := buildSlides(slideInput{
-		year:       convertYearToInt32(year),
-		activity:   activity,
-		categories: ScoreCategories(categoryActivity, s.categoryWeights),
-		seasons:    seasons,
-		archetype:  archetype,
+		year:                    convertYearToInt32(year),
+		activity:                activity,
+		categories:              categoryData.categories,
+		seasons:                 seasons,
+		archetype:               archetype,
+		oldestFavorite:          oldestFavorite,
+		categoryRecommendations: categoryData.recommendations,
 	})
 	if err != nil {
 		return entity.Recap{}, fmt.Errorf("build slides: %w", err)

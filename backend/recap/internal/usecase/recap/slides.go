@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -64,6 +65,14 @@ type (
 		Title string    `json:"title"`
 	}
 
+	listingRef struct {
+		ID         uuid.UUID  `json:"id"`
+		Title      string     `json:"title"`
+		Price      int64      `json:"price"`
+		CategoryID uuid.UUID  `json:"categoryId"`
+		AddedAt    *time.Time `json:"addedAt,omitempty"`
+	}
+
 	amountRange struct {
 		Min      int64  `json:"min"`
 		Max      *int64 `json:"max"`
@@ -108,15 +117,17 @@ type (
 
 	favoritesSlide struct {
 		slideBase
-		Favorites      int64 `json:"favorites"`
-		StillAvailable int32 `json:"stillAvailable"`
+		Favorites      int64       `json:"favorites"`
+		OldestFavorite *listingRef `json:"oldestFavorite,omitempty"`
+		StillAvailable int32       `json:"stillAvailable"`
 	}
 
 	categorySlide struct {
 		slideBase
-		Category    categoryRef  `json:"category"`
-		Subcategory *categoryRef `json:"subcategory,omitempty"`
-		Share       int32        `json:"share"`
+		Category        categoryRef  `json:"category"`
+		Subcategory     *categoryRef `json:"subcategory,omitempty"`
+		Share           int32        `json:"share"`
+		Recommendations []listingRef `json:"recommendations,omitempty"`
 	}
 
 	purchasesSlide struct {
@@ -168,11 +179,13 @@ type seasonLeader struct {
 }
 
 type slideInput struct {
-	year       int32
-	activity   entity.UserActivity
-	categories []entity.CategoryScore
-	seasons    []seasonLeader
-	archetype  entity.Archetype
+	year                    int32
+	activity                entity.UserActivity
+	categories              []entity.CategoryScore
+	seasons                 []seasonLeader
+	archetype               entity.Archetype
+	oldestFavorite          *entity.FavoriteListingPreview
+	categoryRecommendations []entity.ListingPreview
 }
 
 // slideBuilder makes one screen. The second value is false when the screen has
@@ -265,6 +278,7 @@ func buildFavoritesSlide(input slideInput) (any, bool) {
 			},
 		},
 		Favorites:      activity.Favorites,
+		OldestFavorite: favoriteListingRefOf(input.oldestFavorite),
 		StillAvailable: toInt32(activity.FavoritesActive),
 	}, true
 }
@@ -339,9 +353,10 @@ func buildCategorySlide(input slideInput) (any, bool) {
 				CategoryID: &favorite.CategoryID,
 			},
 		},
-		Category:    categoryRef{ID: favorite.CategoryID, Title: favorite.Title},
-		Subcategory: subcategoryRefOf(favorite),
-		Share:       share,
+		Category:        categoryRef{ID: favorite.CategoryID, Title: favorite.Title},
+		Subcategory:     subcategoryRefOf(favorite),
+		Share:           share,
+		Recommendations: listingRefsOf(input.categoryRecommendations),
 	}, true
 }
 
@@ -456,6 +471,34 @@ func subcategoryRefOf(category entity.CategoryScore) *categoryRef {
 	}
 
 	return &categoryRef{ID: category.Subcategory.ID, Title: category.Subcategory.Title}
+}
+
+func favoriteListingRefOf(listing *entity.FavoriteListingPreview) *listingRef {
+	if listing == nil {
+		return nil
+	}
+
+	return &listingRef{
+		ID:         listing.ID,
+		Title:      listing.Title,
+		Price:      listing.Price,
+		CategoryID: listing.CategoryID,
+		AddedAt:    &listing.AddedAt,
+	}
+}
+
+func listingRefsOf(listings []entity.ListingPreview) []listingRef {
+	result := make([]listingRef, 0, len(listings))
+	for _, listing := range listings {
+		result = append(result, listingRef{
+			ID:         listing.ID,
+			Title:      listing.Title,
+			Price:      listing.Price,
+			CategoryID: listing.CategoryID,
+		})
+	}
+
+	return result
 }
 
 var seasonWords = map[entity.Season]string{
