@@ -14,6 +14,16 @@ export default defineConfig({
       },
     },
   },
+  // Тот же прокси для `vite preview`: собранная статика тоже должна видеть API.
+  preview: {
+    port: 4173,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     outDir: 'dist',
     sourcemap: true,
