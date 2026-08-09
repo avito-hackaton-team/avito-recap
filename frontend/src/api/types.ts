@@ -75,11 +75,7 @@ export interface Badge {
 }
 
 export type CtaAction =
-  | 'open_listing'
-  | 'open_category'
-  | 'open_favorites'
-  | 'create_listing'
-  | 'share_recap';
+  'open_listing' | 'open_category' | 'open_favorites' | 'create_listing' | 'share_recap';
 
 export interface Cta {
   action: CtaAction;
@@ -159,4 +155,22 @@ export interface ApiErrorBody {
   code: ErrorCode;
   message: string;
   requestId?: Uuid;
+}
+
+export type BadgeLevel = 'bronze' | 'silver' | 'gold';
+export interface SharedRecap {
+  year: number;
+  displayName: string;
+  archetype: { code: ArchetypeCode; title: string; description: string };
+  activeDays: number;
+  views: number;
+  topCategory: { categoryTitle: string; subcategoryTitle?: string | null } | null;
+  interestSummary: string;
+  badges: Array<{
+    code: string;
+    title: string;
+    description?: string | null;
+    level?: BadgeLevel | null;
+    iconUrl?: string | null;
+  }>;
 }

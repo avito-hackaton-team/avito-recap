@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-
 import { createRecap, getRecap, userMessage } from './api/client';
 import type { Profile, Recap } from './api/types';
 import { StartScreen } from './screens/StartScreen';
 import { StoryScreen } from './screens/StoryScreen';
+import { PublicRecapScreen } from './screens/PublicRecapScreen';
 
-/**
- * Год итогов. По умолчанию прошедший: recap смотрят в январе, когда интересен
- * год, который только закончился. Значение фиксируется через VITE_RECAP_YEAR —
- * сид тестовых данных наполняет конкретный год, и он должен совпадать.
- */
 const RECAP_YEAR = Number(import.meta.env.VITE_RECAP_YEAR ?? new Date().getFullYear() - 1);
 
 type Screen =
@@ -18,7 +13,42 @@ type Screen =
   | { name: 'story'; profile: Profile; recap: Recap }
   | { name: 'failed'; profile: Profile; message: string };
 
+// Моковые данные для PublicRecapScreen
+const mockPublicRecap = {
+  id: 'mock-recap-123',
+  year: 2025,
+  displayName: 'Алексей',
+  archetype: {
+    title: 'Исследователь',
+    description:
+      'Ты любишь искать новое и находить интересные варианты. Твой год был полон открытий!',
+  },
+  activeDays: 187,
+  views: 3456,
+  topCategory: {
+    categoryTitle: 'Электроника',
+    subcategoryTitle: 'Смартфоны и гаджеты',
+  },
+  interestSummary:
+    'В этом году ты активно интересовался технологиями, искал новый телефон и сравнивал характеристики.',
+  badges: [
+    {
+      id: 'badge-1',
+      title: 'Первопроходец',
+      description: 'Ты один из первых, кто заглянул в новый раздел "Технологии будущего"',
+      level: 'gold',
+      iconUrl: '🏆',
+    },
+  ],
+};
+
 export function App() {
+  // 👇 ВРЕМЕННО: показываем PublicRecapScreen для отладки
+  // После проверки закомментируйте эту строку и раскомментируйте код ниже
+  return <PublicRecapScreen recap={mockPublicRecap} isAuthorized={false} />;
+
+  // 👇 ВЕСЬ ОСТАЛЬНОЙ КОД ВРЕМЕННО ЗАКОММЕНТИРОВАН
+  /*
   const [screen, setScreen] = useState<Screen>({ name: 'start' });
 
   const start = useCallback((profile: Profile) => {
@@ -39,7 +69,6 @@ export function App() {
 
     const generate = async () => {
       try {
-        // POST идемпотентен: повторный запуск того же профиля вернёт готовые итоги.
         const recapId = await createRecap(profile.id, RECAP_YEAR);
         const recap = await getRecap(recapId);
 
@@ -89,4 +118,5 @@ export function App() {
     case 'story':
       return <StoryScreen recap={screen.recap} profile={screen.profile} onExit={backToStart} />;
   }
+  */
 }
