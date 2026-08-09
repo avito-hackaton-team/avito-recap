@@ -16,6 +16,8 @@ GOOSE := $(BIN_DIR)/goose
 GOOSE_TABLE := public.goose_db_version
 OGEN_VERSION := v1.23.0
 OGEN := $(BIN_DIR)/ogen
+MOCKERY_VERSION := v3.7.0
+MOCKERY := $(BIN_DIR)/mockery
 
 ENV_FILE := $(CURDIR)/.env
 MIGRATIONS_DIR := $(CURDIR)/backend/recap/migrations/migrations
@@ -29,7 +31,7 @@ POSTGRES_DSN = host=$${POSTGRES_BIND_HOST:-127.0.0.1} \
 	sslmode=$${POSTGRES_SSL_MODE:-disable}
 
 .PHONY: help tools require-backend require-env lint-config format lint vet test test-race \
-	test-integration tidy tidy-check generate generate-api check up down logs \
+	test-integration tidy tidy-check generate generate-api generate-mocks check up down logs \
 	build run db-up compose-config ps logs-recap migrate-up migrate-down migrate-status \
 	seed seed-reset seed-dry-run
 
@@ -45,6 +47,7 @@ help:
 	@echo "  make tidy          Synchronize Go dependencies"
 	@echo "  make tidy-check    Check whether go.mod and go.sum are tidy"
 	@echo "  make generate      Generate code from project contracts"
+	@echo "  make generate-mocks Generate mocks for unit tests"
 	@echo "  make check         Run all required Go checks"
 	@echo "  make build         Build recap service locally"
 	@echo "  make run           Run recap locally with PostgreSQL in Docker"
@@ -77,7 +80,12 @@ $(OGEN):
 	GOBIN=$(BIN_DIR) go install \
 		github.com/ogen-go/ogen/cmd/ogen@$(OGEN_VERSION)
 
-tools: $(GOLANGCI_LINT) $(GOOSE) $(OGEN)
+$(MOCKERY):
+	mkdir -p $(BIN_DIR)
+	GOBIN=$(BIN_DIR) go install \
+		github.com/vektra/mockery/v3@$(MOCKERY_VERSION)
+
+tools: $(GOLANGCI_LINT) $(GOOSE) $(OGEN) $(MOCKERY)
 
 require-backend:
 	@test -f $(BACKEND_GO_MOD) || { \
@@ -112,10 +120,10 @@ lint: require-backend $(GOLANGCI_LINT)
 vet: require-backend
 	cd $(BACKEND_DIR) && go vet ./...
 
-test: require-backend
+test: require-backend generate
 	cd $(BACKEND_DIR) && go test ./...
 
-test-race: require-backend
+test-race: require-backend generate
 	cd $(BACKEND_DIR) && go test -race -count=1 ./...
 
 test-integration: require-backend
@@ -126,7 +134,7 @@ test-integration: require-backend
 		echo "No integration tests found; skipping."; \
 		exit 0; \
 	fi; \
-	cd $(BACKEND_DIR) && go test -race -count=1 -tags=integration ./...
+	cd $(BACKEND_DIR) && go test -race -count=1 -timeout=5m -tags=integration ./tests/integration/...
 
 tidy: require-backend
 	cd $(BACKEND_DIR) && go mod tidy
@@ -134,12 +142,15 @@ tidy: require-backend
 tidy-check: require-backend
 	cd $(BACKEND_DIR) && go mod tidy -diff
 
-generate: generate-api
+generate: generate-mocks
 
 generate-api: require-backend $(OGEN)
 	$(OGEN) --target $(GENERATED_API_DIR) --package recapapi --clean $(OPENAPI_SPEC)
 
-check: generate-api
+generate-mocks: generate-api $(MOCKERY)
+	cd $(BACKEND_DIR) && $(MOCKERY) --config .mockery.yml
+
+check: generate
 	$(MAKE) lint-config lint vet tidy-check test-race test-integration
 
 build: generate-api
