@@ -183,6 +183,7 @@ export function SlideView({ slide, onShare }: { slide: Slide; onShare: () => voi
                 title={slide.badge?.title ?? 'Продажи года'}
                 note={slide.badge?.description}
                 amount={slide.amountRange?.label}
+                art="badge-sales"
               />
             ) : undefined
           }
@@ -251,7 +252,7 @@ export function SlideView({ slide, onShare }: { slide: Slide; onShare: () => voi
 
     case 'archetype':
       return (
-        <SlideLayout slide={slide}>
+        <SlideLayout slide={slide} aside={<Art type="archetype" name={`archetype-${slide.archetype.code}`} />}>
           <p className="hero">
             вы — <span className="accent">{slide.archetype.title.toLowerCase()}</span>
           </p>
@@ -340,16 +341,18 @@ function BadgePanel({
   title,
   note,
   amount,
+  art = 'badge',
 }: {
   caption: string;
   title: string;
   note?: string;
+  art?: string;
   amount?: string;
 }) {
   return (
     <div className="panel">
       <p className="panel__caption">{caption}</p>
-      <img className="panel__medal" src={artUrl('badge')} alt="" />
+      <img className="panel__medal" src={artUrl(art)} alt="" />
       <p className="panel__title">{title}</p>
       {note ? <p className="panel__note">{note}</p> : null}
 

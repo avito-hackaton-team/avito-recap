@@ -29,7 +29,11 @@ const CONFETTI = ['star', 'cube', 'ball', 'star', 'cube'] as const;
  */
 const FORMATS = ['png', 'svg'] as const;
 
-export function Art({ type }: { type: SlideType }) {
+/**
+ * name перекрывает имя файла: на слайде архетипа картинка своя для каждого типа
+ * пользователя, а глиф-фолбэк остаётся общим для слайда.
+ */
+export function Art({ type, name }: { type: SlideType; name?: string }) {
   const [attempt, setAttempt] = useState(0);
 
   const format = FORMATS[attempt];
@@ -45,7 +49,7 @@ export function Art({ type }: { type: SlideType }) {
       {format ? (
         <img
           className="art__image"
-          src={`/art/${type}.${format}`}
+          src={`/art/${name ?? type}.${format}`}
           alt=""
           onError={() => setAttempt((current) => current + 1)}
         />
