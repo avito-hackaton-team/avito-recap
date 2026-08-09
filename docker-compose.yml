@@ -4,7 +4,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_RECAP_YEAR: "${RECAP_YEAR:-2025}"
+        VITE_RECAP_YEAR: "${RECAP_YEAR:-2026}"
 
     ports:
       - "${FRONTEND_BIND_HOST:-127.0.0.1}:${FRONTEND_EXTERNAL_PORT:-3000}:80"
@@ -51,7 +51,7 @@ services:
       POSTGRES_PORT: "5432"
 
     entrypoint: ["/app/seed"]
-    command: ["--year=2025", "--seed=20250807"]
+    command: ["--year=2026", "--seed=20250807"]
 
     depends_on:
       postgres:
