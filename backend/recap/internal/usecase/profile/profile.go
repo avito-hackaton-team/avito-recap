@@ -23,6 +23,10 @@ func NewProfileService(profileRepository profileRepository) *profileService {
 }
 
 func (s *profileService) List(ctx context.Context) ([]entity.Profile, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, fmt.Errorf("list profiles: %w", err)
+	}
+
 	profiles, err := s.profileRepository.List(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list profiles: %w", err)

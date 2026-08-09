@@ -2,22 +2,24 @@ openapi: 3.0.3
 
 info:
   title: Avito Recap API
-  version: 1.0.0
+  version: 1.1.0
   description: |
     API MVP «Итоги года» (Avito Recap).
 
     Сценарий: пользователь выбирает тестовый профиль (`GET /profiles`),
-    запускает генерацию итогов (`POST /recaps`), смотрит слайды (`GET /recaps/{id}`)
-    и делится публичной карточкой (`POST /recaps/{id}/share`).
+    запускает генерацию итогов (`POST /recaps`), смотрит слайды (`GET /recaps/{id}`),
+    создаёт постоянную публичную ссылку (`POST /recaps/{id}/share`) и открывает
+    карточку по публичному токену (`GET /shared-recaps/{token}`).
 
     Соглашения:
-      * все идентификаторы — UUID v4 (строка, формат `uuid`);
+      * внутренние идентификаторы — UUID v4 (строка, формат `uuid`),
+        публичная ссылка использует отдельный непрозрачный токен;
       * все ошибки возвращаются единым телом `Error` с машиночитаемым `code`;
       * даты и время — RFC 3339 в UTC;
       * денежные величины не раскрываются точно: только диапазоны (`AmountRange`);
-      * приватность: личный recap и публичная share-карточка имеют разный набор полей.
-        В `ShareCard` не попадают названия конкретных объявлений, суммы, переписки
-        и любые данные контрагентов.
+      * приватность: личный recap и публичная карточка имеют разный набор полей.
+        В `SharedRecap` не попадают фамилия, причины архетипа, избранное, покупки,
+        продажи, сообщения, суммы и конкретные объявления.
 
     Генерация детерминирована: одинаковые входные данные профиля и год
     дают одинаковый recap (те же слайды, тот же архетип).
@@ -31,6 +33,8 @@ tags:
     description: Тестовые профили для демонстрации сценария
   - name: Recaps
     description: Генерация, просмотр и шеринг «Итогов года»
+  - name: SharedRecaps
+    description: Публичный просмотр безопасной версии «Итогов года»
 
 paths:
 
@@ -159,51 +163,67 @@ paths:
       tags:
         - Recaps
       operationId: shareRecap
-      summary: Создать публичную share-карточку
+      summary: Создать постоянную публичную ссылку
       description: |
-        Публикует урезанную версию итогов по постоянной ссылке.
+        Публикует фиксированную безопасную версию итогов по постоянной ссылке.
 
-        В карточку попадают только безопасные агрегаты: архетип, число активных дней,
-        любимая категория, бейджи и «мягкие» метрики. Никогда не попадают:
-        суммы сделок, конкретные объявления, сообщения и данные контрагентов.
+        В карточку попадают имя без фамилии, архетип без причин, число активных
+        дней, просмотры, любимая категория и подкатегория, краткое описание
+        интересов и бейджи без числовых описаний. Никогда не попадают избранное,
+        покупки, продажи, сообщения, суммы и конкретные объявления.
 
-        Операция идемпотентна: повторный вызов для того же recap возвращает
-        ту же ссылку (`200 OK`), если карточка ещё не отозвана.
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ShareRecapRequest"
+        Операция идемпотентна: повторный вызов для того же recap всегда возвращает
+        ту же постоянную ссылку (`200 OK`). Карточка не настраивается клиентом.
       responses:
         "200":
           description: Карточка уже была создана ранее
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShareResponse"
+                $ref: "#/components/schemas/SharedRecapLink"
         "201":
           description: Карточка создана
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShareResponse"
+                $ref: "#/components/schemas/SharedRecapLink"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
           $ref: "#/components/responses/NotFound"
-        "409":
-          description: Recap ещё не готов — шерить нечего
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /shared-recaps/{token}:
+    parameters:
+      - $ref: "#/components/parameters/SharedRecapToken"
+    get:
+      tags:
+        - SharedRecaps
+      operationId: getSharedRecap
+      summary: Получить публичную версию «Итогов года»
+      description: |
+        Возвращает фиксированную публичную карточку по токену.
+        Endpoint не раскрывает идентификаторы профиля и исходного recap.
+      responses:
+        "200":
+          description: Публичная карточка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedRecap"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          description: Публичная ссылка не найдена
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
               example:
-                code: recap_not_ready
-                message: Итоги ещё генерируются
-                requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f96
-        "429":
-          $ref: "#/components/responses/TooManyRequests"
+                code: shared_recap_not_found
+                message: Публичная ссылка не найдена
+                requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f91
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -219,17 +239,25 @@ components:
       schema:
         $ref: "#/components/schemas/Uuid"
 
+    SharedRecapToken:
+      name: token
+      in: path
+      required: true
+      description: Публичный токен карточки
+      schema:
+        $ref: "#/components/schemas/SharedRecapToken"
+
   responses:
 
     BadRequest:
-      description: Некорректный запрос (невалидный UUID, битый JSON, неверные типы полей)
+      description: Некорректный запрос (невалидный path-параметр, битый JSON, неверные типы полей)
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
           example:
             code: bad_request
-            message: Поле id не является UUID
+            message: Параметры запроса не прошли валидацию
             requestId: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f95
 
     NotFound:
@@ -280,6 +308,14 @@ components:
       format: uuid
       example: 018f4c1e-0a5f-7b3a-9c11-2b6a5d0e1f01
 
+    SharedRecapToken:
+      type: string
+      description: 128 бит случайности в Base64 URL без padding
+      minLength: 22
+      maxLength: 22
+      pattern: "^[A-Za-z0-9_-]{22}$"
+      example: h8T5P0Bm7rWqLk6uDe2Ftg
+
     Year:
       type: integer
       format: int32
@@ -316,7 +352,7 @@ components:
           * `profile_not_found` — профиль не существует;
           * `recap_not_found` — recap не существует;
           * `not_enough_activity` — за год недостаточно активности для генерации;
-          * `recap_not_ready` — recap ещё в статусе `generating` или `failed`;
+          * `shared_recap_not_found` — публичная ссылка не существует;
           * `rate_limited` — превышен лимит запросов;
           * `internal_error` — необработанная ошибка сервиса.
       enum:
@@ -324,7 +360,7 @@ components:
         - profile_not_found
         - recap_not_found
         - not_enough_activity
-        - recap_not_ready
+        - shared_recap_not_found
         - rate_limited
         - internal_error
 
@@ -410,11 +446,6 @@ components:
           minItems: 1
           items:
             $ref: "#/components/schemas/Slide"
-        share:
-          allOf:
-            - $ref: "#/components/schemas/ShareResponse"
-          nullable: true
-          description: Данные публичной карточки, если пользователь уже делился итогами
         generatedAt:
           type: string
           format: date-time
@@ -595,7 +626,9 @@ components:
           type: integer
           format: int64
           nullable: true
-          example: 42000
+          description: Цена объявления в копейках
+          minimum: 0
+          example: 4200000
         imageUrl:
           type: string
           format: uri
@@ -752,8 +785,10 @@ components:
               example: 41
             recommendations:
               type: array
-              description: Свежие объявления из любимой категории
-              maxItems: 5
+              description: |
+                До трёх свежих активных объявлений из любимой категории.
+                Сначала идут объявления из любимой подкатегории, если она определена.
+              maxItems: 3
               items:
                 $ref: "#/components/schemas/ListingRef"
 
@@ -921,97 +956,147 @@ components:
           type: string
           example: сообщений отправлено
 
-    ShareRecapRequest:
-      type: object
-      properties:
-        includeSlides:
-          type: array
-          description: |
-            Какие слайды вынести в публичную карточку. Если не передано —
-            берётся безопасный набор по умолчанию (`active_days`,
-            `favorite_category`, `archetype`). Слайды с чувствительными данными
-            (`sales`, `purchases`, `messages`, `favorites`) в карточку не попадают,
-            даже если запрошены.
-          items:
-            $ref: "#/components/schemas/SlideType"
-        theme:
-          type: string
-          enum:
-            - light
-            - dark
-          default: dark
-
-    ShareResponse:
+    SharedRecapLink:
       type: object
       required:
         - token
         - url
-        - card
         - createdAt
       properties:
         token:
-          type: string
-          description: Публичный токен карточки (не UUID, чтобы id recap не утекал в ссылку)
-          example: QmZ4x9Lp
+          $ref: "#/components/schemas/SharedRecapToken"
         url:
           type: string
           format: uri
-          example: https://recap.example.com/s/QmZ4x9Lp
-        imageUrl:
-          type: string
-          format: uri
-          nullable: true
-          description: Пререндеренная картинка карточки для соцсетей
-        card:
-          $ref: "#/components/schemas/ShareCard"
+          example: https://recap.example.com/shared-recaps/h8T5P0Bm7rWqLk6uDe2Ftg
         createdAt:
           type: string
           format: date-time
           example: "2026-01-09T08:35:00Z"
-        expiresAt:
-          type: string
-          format: date-time
-          nullable: true
-          description: "`null` — ссылка бессрочная"
 
-    ShareCard:
+    SharedRecap:
       type: object
       description: |
-        Публично видимая часть итогов. Содержит только агрегаты, которые
-        безопасно показывать посторонним: без сумм, объявлений и переписок.
+        Фиксированная публичная версия итогов. Формируется сервером по списку
+        разрешённых полей, а не фильтруется клиентом из приватного recap.
       required:
         - year
-        - archetypeTitle
+        - displayName
+        - archetype
+        - activeDays
+        - badges
       properties:
         year:
           $ref: "#/components/schemas/Year"
         displayName:
           type: string
           description: Имя без фамилии
+          minLength: 1
+          maxLength: 64
           example: Пётр
-        archetypeTitle:
-          type: string
-          example: Охотник за находками
-        archetypeDescription:
-          type: string
-          example: Вы просматриваете десятки вариантов, прежде чем выбрать один.
+        archetype:
+          $ref: "#/components/schemas/SharedArchetype"
         activeDays:
           type: integer
           format: int32
           minimum: 0
           maximum: 366
           example: 243
-        favoriteCategoryTitle:
+        views:
+          type: integer
+          format: int64
+          minimum: 0
+          example: 1248
+        topCategory:
+          $ref: "#/components/schemas/SharedCategory"
+        interestSummary:
           type: string
-          example: Электроника
+          minLength: 1
+          maxLength: 512
+          example: Зимой — техника, летом — велосипеды.
         badges:
           type: array
           maxItems: 3
           items:
-            $ref: "#/components/schemas/Badge"
-        theme:
+            $ref: "#/components/schemas/SharedBadge"
+
+    SharedArchetype:
+      type: object
+      description: |
+        Архетип без персональных причин и значений исходных метрик. Публичное
+        описание формулируется нейтрально, без обращения к владельцу или зрителю.
+      required:
+        - code
+        - title
+        - description
+      properties:
+        code:
           type: string
           enum:
-            - light
-            - dark
-          example: dark
+            - collector
+            - dealmaker
+            - negotiator
+            - explorer
+          example: explorer
+        title:
+          type: string
+          minLength: 1
+          example: Исследователь
+        description:
+          type: string
+          description: Нейтральное публичное объяснение смысла архетипа
+          minLength: 1
+          example: Интерес к разным категориям и постоянный поиск новых находок.
+
+    SharedCategory:
+      type: object
+      description: Любимая категория и, если определена, подкатегория пользователя
+      required:
+        - categoryTitle
+      properties:
+        categoryTitle:
+          type: string
+          minLength: 1
+          maxLength: 128
+          example: Электроника
+        subcategoryTitle:
+          type: string
+          minLength: 1
+          maxLength: 128
+          example: Смартфоны
+
+    SharedBadge:
+      type: object
+      description: |
+        Бейдж с безопасным публичным описанием. Описание объясняет смысл
+        достижения, но не раскрывает числовое значение или порог выдачи.
+      required:
+        - code
+        - title
+        - description
+        - level
+      properties:
+        code:
+          type: string
+          minLength: 1
+          example: buyer_gold
+        title:
+          type: string
+          minLength: 1
+          example: Знаток покупок
+        description:
+          type: string
+          description: Нейтральное публичное объяснение смысла достижения без указания порога
+          minLength: 1
+          maxLength: 255
+          example: Умение находить подходящие вещи на Авито.
+        level:
+          type: string
+          enum:
+            - bronze
+            - silver
+            - gold
+          example: gold
+        iconUrl:
+          type: string
+          format: uri

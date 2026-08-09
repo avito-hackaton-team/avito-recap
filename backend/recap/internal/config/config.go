@@ -4,6 +4,7 @@ package config
 import (
 	"fmt"
 	"net"
+	"net/url"
 	"time"
 
 	"github.com/caarlos0/env/v11"
@@ -15,6 +16,7 @@ type Config struct {
 	HTTP       HTTPConfig       `envPrefix:"HTTP_"`
 	PostgreSQL PostgreSQLConfig `envPrefix:"POSTGRES_"`
 	App        AppConfig        `envPrefix:"APP_"`
+	Public     PublicConfig     `envPrefix:"PUBLIC_"`
 	Repository RepositoryConfig `envPrefix:"REPOSITORY_"`
 	Logger     applogger.Config `envPrefix:"LOGGER_"`
 }
@@ -37,6 +39,10 @@ type PostgreSQLConfig struct {
 
 type AppConfig struct {
 	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT" envDefault:"10s"`
+}
+
+type PublicConfig struct {
+	BaseURL string `env:"BASE_URL,notEmpty"`
 }
 
 type RepositoryConfig struct {
@@ -65,6 +71,10 @@ func (c Config) Validate() error {
 		return fmt.Errorf("APP_SHUTDOWN_TIMEOUT must be positive")
 	}
 
+	if _, err := c.Public.URL(); err != nil {
+		return err
+	}
+
 	if c.Repository.OperationTimeout <= 0 {
 		return fmt.Errorf("REPOSITORY_OPERATION_TIMEOUT must be positive")
 	}
@@ -90,4 +100,25 @@ func (c Config) Validate() error {
 	}
 
 	return nil
+}
+
+func (c PublicConfig) URL() (url.URL, error) {
+	parsed, err := url.Parse(c.BaseURL)
+	if err != nil {
+		return url.URL{}, fmt.Errorf("PUBLIC_BASE_URL: %w", err)
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return url.URL{}, fmt.Errorf("PUBLIC_BASE_URL must use http or https")
+	}
+	if parsed.Host == "" {
+		return url.URL{}, fmt.Errorf("PUBLIC_BASE_URL must be absolute")
+	}
+	if parsed.User != nil {
+		return url.URL{}, fmt.Errorf("PUBLIC_BASE_URL must not contain user info")
+	}
+	if parsed.RawQuery != "" || parsed.Fragment != "" {
+		return url.URL{}, fmt.Errorf("PUBLIC_BASE_URL must not contain query or fragment")
+	}
+
+	return *parsed, nil
 }
