@@ -3,6 +3,7 @@ package converter
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/generated/recapapi"
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
@@ -73,4 +74,70 @@ func ConvertEntityArchetypeToAPIArchetype(archetype entity.Archetype) recapapi.A
 
 func ConvertIntToAPIYear(year int32) recapapi.Year {
 	return recapapi.Year(year)
+}
+
+func ConvertEntitySharedRecapToAPISharedRecap(
+	sharedRecap entity.SharedRecap,
+) (recapapi.SharedRecap, error) {
+	badges, err := convertEntitySharedBadgesToAPI(sharedRecap.Badges)
+	if err != nil {
+		return recapapi.SharedRecap{}, err
+	}
+
+	result := recapapi.SharedRecap{
+		Year:        ConvertIntToAPIYear(sharedRecap.Year),
+		DisplayName: sharedRecap.DisplayName,
+		Archetype: recapapi.SharedArchetype{
+			Code:        recapapi.SharedArchetypeCode(sharedRecap.Archetype.Name),
+			Title:       sharedRecap.Archetype.Title,
+			Description: sharedRecap.Archetype.Description,
+		},
+		ActiveDays: sharedRecap.ActiveDays,
+		Badges:     badges,
+	}
+
+	if sharedRecap.Views != nil {
+		result.Views = recapapi.NewOptInt64(*sharedRecap.Views)
+	}
+	if sharedRecap.TopCategory != nil {
+		category := recapapi.SharedCategory{
+			CategoryTitle: sharedRecap.TopCategory.CategoryTitle,
+		}
+		if sharedRecap.TopCategory.SubcategoryTitle != "" {
+			category.SubcategoryTitle = recapapi.NewOptString(
+				sharedRecap.TopCategory.SubcategoryTitle,
+			)
+		}
+		result.TopCategory = recapapi.NewOptSharedCategory(category)
+	}
+	if sharedRecap.InterestSummary != "" {
+		result.InterestSummary = recapapi.NewOptString(sharedRecap.InterestSummary)
+	}
+
+	return result, nil
+}
+
+func convertEntitySharedBadgesToAPI(
+	badges []entity.SharedBadge,
+) ([]recapapi.SharedBadge, error) {
+	result := make([]recapapi.SharedBadge, 0, len(badges))
+	for i, badge := range badges {
+		converted := recapapi.SharedBadge{
+			Code:        badge.Code,
+			Title:       badge.Title,
+			Description: badge.Description,
+			Level:       recapapi.SharedBadgeLevel(badge.Level),
+		}
+		if badge.IconURL != nil {
+			iconURL, err := url.Parse(*badge.IconURL)
+			if err != nil {
+				return nil, fmt.Errorf("parse badge %d icon url: %w", i, err)
+			}
+			converted.IconUrl = recapapi.NewOptURI(*iconURL)
+		}
+
+		result = append(result, converted)
+	}
+
+	return result, nil
 }

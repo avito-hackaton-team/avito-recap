@@ -4,6 +4,7 @@ package recap
 import (
 	"context"
 	"errors"
+	"net/url"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -17,29 +18,43 @@ type (
 	recapService interface {
 		Create(ctx context.Context, profileID uuid.UUID, year int) (entity.RecapCreation, error)
 		Get(ctx context.Context, recapID uuid.UUID) (entity.Recap, error)
-		// Share(ctx context.Context, id uuid.UUID) (entity.PublicRecap, error)
 	}
 
 	profileService interface {
 		List(ctx context.Context) ([]entity.Profile, error)
+	}
+
+	sharedRecapService interface {
+		Share(ctx context.Context, recapID uuid.UUID) (entity.SharedRecapCreation, error)
+		Get(ctx context.Context, token entity.SharedRecapToken) (entity.SharedRecap, error)
 	}
 )
 
 type recapServer struct {
 	recapapi.UnimplementedHandler
 
-	logger         *zap.Logger
-	recapService   recapService
-	profileService profileService
+	logger             *zap.Logger
+	recapService       recapService
+	profileService     profileService
+	sharedRecapService sharedRecapService
+	publicBaseURL      url.URL
 }
 
 var _ recapapi.Handler = (*recapServer)(nil)
 
-func NewRecapServer(logger *zap.Logger, recapService recapService, profileService profileService) *recapServer {
+func NewRecapServer(
+	logger *zap.Logger,
+	recapService recapService,
+	profileService profileService,
+	sharedRecapService sharedRecapService,
+	publicBaseURL url.URL,
+) *recapServer {
 	return &recapServer{
-		logger:         logger,
-		recapService:   recapService,
-		profileService: profileService,
+		logger:             logger,
+		recapService:       recapService,
+		profileService:     profileService,
+		sharedRecapService: sharedRecapService,
+		publicBaseURL:      publicBaseURL,
 	}
 }
 
@@ -66,6 +81,13 @@ func (s *recapServer) CreateRecap(
 	creation, err := s.recapService.Create(ctx, uuid.UUID(req.ProfileId), int(req.Year))
 
 	switch {
+	case errors.Is(err, entity.ErrProfileIDRequired):
+		apiErr := recapapi.CreateRecapBadRequest(
+			s.errorBody(recapapi.ErrorCodeBadRequest, err.Error(), "create recap", err),
+		)
+
+		return &apiErr, nil
+
 	case errors.Is(err, entity.ErrProfileNotFound):
 		apiErr := recapapi.CreateRecapNotFound(
 			s.errorBody(recapapi.ErrorCodeProfileNotFound, err.Error(), "create recap", err),
@@ -108,6 +130,13 @@ func (s *recapServer) GetRecap(
 	recap, err := s.recapService.Get(ctx, uuid.UUID(params.ID))
 
 	switch {
+	case errors.Is(err, entity.ErrRecapIDRequired):
+		apiErr := recapapi.GetRecapBadRequest(
+			s.errorBody(recapapi.ErrorCodeBadRequest, err.Error(), "get recap", err),
+		)
+
+		return &apiErr, nil
+
 	case errors.Is(err, entity.ErrRecapNotFound):
 		apiErr := recapapi.GetRecapNotFound(
 			s.errorBody(recapapi.ErrorCodeRecapNotFound, err.Error(), "get recap", err),
