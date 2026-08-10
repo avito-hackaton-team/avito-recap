@@ -5501,3 +5501,101 @@ footer {
     padding: 0 16px 28px !important;
   }
 }
+
+/* ==========================================================================
+   Адаптив под высоту экрана
+
+   Ширина уже разложена по слайдам, а вот высота нет: карточка истории держит
+   min-height в размер вьюпорта, но её собственные отступы и содержимое на
+   ноутбуках 1280×720 и 1366×768 вылезают наружу и толкают страницу в скролл.
+   Правила ниже сжимают оболочку, а не каждый слайд по отдельности, поэтому
+   работают для всех одиннадцати экранов сразу.
+   ========================================================================== */
+
+.story {
+  /* Карточка не выше вьюпорта: длинный контент скроллится внутри неё,
+     а не уводит вниз весь макет вместе с кнопками навигации. */
+  max-height: calc(100dvh - 48px);
+}
+
+.story__content {
+  /* Без этого grid-элемент не даёт себя сжать и игнорирует max-height родителя. */
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Ноутбуки 1366×768 и близкие: убираем лишний вертикальный воздух. */
+@media (max-height: 860px) {
+  #root {
+    padding: 16px;
+  }
+
+  .story,
+  .story--light {
+    max-height: calc(100dvh - 32px);
+    min-height: calc(100dvh - 32px);
+  }
+
+  .story {
+    gap: 20px;
+    padding: 20px 32px 24px;
+  }
+}
+
+/* 1280×720 и ниже: минимальные отступы, крупные числа чуть мельче. */
+@media (max-height: 740px) {
+  #root {
+    padding: 10px;
+  }
+
+  .story,
+  .story--light {
+    max-height: calc(100dvh - 20px);
+    min-height: calc(100dvh - 20px);
+  }
+
+  .story {
+    gap: 14px;
+    padding: 14px 24px 18px;
+  }
+
+  .story__top {
+    gap: 16px;
+  }
+
+  .story__bottom {
+    gap: 12px;
+  }
+
+  .slide__main {
+    gap: 12px;
+  }
+}
+
+/* Телефон в альбомной ориентации: высоты почти нет, оставляем только суть. */
+@media (max-height: 520px) and (orientation: landscape) {
+  #root {
+    padding: 8px;
+  }
+
+  .story,
+  .story--light {
+    max-height: calc(100dvh - 16px);
+    min-height: calc(100dvh - 16px);
+  }
+
+  .story {
+    gap: 10px;
+    padding: 10px 16px 12px;
+  }
+
+  .story__progress {
+    display: none;
+  }
+
+  .slide img {
+    max-height: 40dvh;
+  }
+}
