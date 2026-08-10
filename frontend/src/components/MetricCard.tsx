@@ -1,1 +1,0 @@
-import type {ReactNode} from 'react'; export function MetricCard({icon,value,label,accent}:{icon:ReactNode;value:number;label:string;accent:'orange'|'blue'}){return <article className={'metric metric--'+accent}><div className="metric__icon">{icon}</div><div><strong>{new Intl.NumberFormat('ru-RU').format(value)}</strong><span>{label}</span></div></article>}

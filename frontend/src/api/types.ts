@@ -60,6 +60,15 @@ export interface CategoryRef {
   title: string;
 }
 
+export interface ListingRef {
+  id: Uuid;
+  title: string;
+  price?: number | null;
+  imageUrl?: string | null;
+  categoryId?: Uuid;
+  addedAt?: string;
+}
+
 export interface AmountRange {
   min: number;
   max: number | null;
@@ -110,12 +119,18 @@ export type Slide =
   | (SlideBase & { type: 'intro'; year: number })
   | (SlideBase & { type: 'active_days'; activeDays: number })
   | (SlideBase & { type: 'views'; views: number })
-  | (SlideBase & { type: 'favorites'; favorites: number; stillAvailable?: number })
+  | (SlideBase & {
+      type: 'favorites';
+      favorites: number;
+      oldestFavorite?: ListingRef | null;
+      stillAvailable?: number;
+    })
   | (SlideBase & {
       type: 'favorite_category';
       category: CategoryRef;
       subcategory?: CategoryRef | null;
       share?: number;
+      recommendations?: ListingRef[];
     })
   | (SlideBase & { type: 'purchases'; purchases: number; badge?: Badge | null })
   | (SlideBase & {
@@ -145,6 +160,7 @@ export type ErrorCode =
   | 'bad_request'
   | 'profile_not_found'
   | 'recap_not_found'
+  | 'shared_recap_not_found'
   | 'not_enough_activity'
   | 'recap_not_ready'
   | 'rate_limited'
@@ -158,19 +174,26 @@ export interface ApiErrorBody {
 }
 
 export type BadgeLevel = 'bronze' | 'silver' | 'gold';
+
+export interface SharedRecapLink {
+  token: string;
+  url: string;
+  createdAt: string;
+}
+
 export interface SharedRecap {
   year: number;
   displayName: string;
   archetype: { code: ArchetypeCode; title: string; description: string };
   activeDays: number;
-  views: number;
-  topCategory: { categoryTitle: string; subcategoryTitle?: string | null } | null;
-  interestSummary: string;
+  views?: number;
+  topCategory?: { categoryTitle: string; subcategoryTitle?: string | null };
+  interestSummary?: string;
   badges: Array<{
     code: string;
     title: string;
-    description?: string | null;
-    level?: BadgeLevel | null;
-    iconUrl?: string | null;
+    description: string;
+    level: BadgeLevel;
+    iconUrl?: string;
   }>;
 }

@@ -5,9 +5,9 @@ import type {
   Profile,
   ProfileList,
   Recap,
+  SharedRecap,
+  SharedRecapLink,
 } from './types';
-
-import type { SharedRecap } from './types';
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '/api/v1';
 
@@ -33,6 +33,7 @@ const USER_MESSAGES: Record<ErrorCode, string> = {
   bad_request: 'Что-то не так с запросом. Обновите страницу и попробуйте снова.',
   profile_not_found: 'Такого профиля больше нет. Выберите другой.',
   recap_not_found: 'Итоги не найдены. Похоже, ссылка устарела.',
+  shared_recap_not_found: 'Публичные итоги не найдены. Проверьте ссылку.',
   not_enough_activity: 'За этот год слишком мало активности, чтобы собрать итоги.',
   recap_not_ready: 'Итоги ещё готовятся. Попробуйте через минуту.',
   rate_limited: 'Слишком много запросов. Подождите немного.',
@@ -88,42 +89,10 @@ export async function getRecap(recapId: string): Promise<Recap> {
   return request<Recap>(`/recaps/${recapId}`);
 }
 
-export async function getSharedRecap(_id: string): Promise<SharedRecap> {
-  return Promise.resolve(MOCK_RECAP);
+export async function shareRecap(recapId: string): Promise<SharedRecapLink> {
+  return request<SharedRecapLink>(`/recaps/${recapId}/share`, { method: 'POST' });
 }
-export const MOCK_RECAP: SharedRecap = {
-  year: 2025,
-  displayName: 'Пётр',
-  archetype: {
-    code: 'explorer',
-    title: 'Исследователь',
-    description: 'Интерес к разным категориям и постоянный поиск новых находок.',
-  },
-  activeDays: 243,
-  views: 1248,
-  topCategory: { categoryTitle: 'Электроника', subcategoryTitle: 'Смартфоны' },
-  interestSummary: 'Зимой — техника, летом — велосипеды.',
-  badges: [
-    {
-      code: 'buyer_gold',
-      title: 'Знаток покупок',
-      description: 'Умение находить подходящие вещи на Авито.',
-      level: 'gold',
-      iconUrl: null,
-    },
-    {
-      code: 'explorer_silver',
-      title: 'Любопытный исследователь',
-      description: 'Вы открываете для себя новые категории.',
-      level: 'silver',
-      iconUrl: null,
-    },
-    {
-      code: 'active_bronze',
-      title: 'В ритме Авито',
-      description: 'Вы регулярно возвращаетесь к своим интересам.',
-      level: 'bronze',
-      iconUrl: null,
-    },
-  ],
-};
+
+export async function getSharedRecap(token: string): Promise<SharedRecap> {
+  return request<SharedRecap>(`/shared-recaps/${encodeURIComponent(token)}`);
+}
