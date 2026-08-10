@@ -24,6 +24,9 @@ profile.cov
 
 # Generated Go code
 /backend/recap/generated/
+/backend/recap/internal/usecase/profile/mocks/
+/backend/recap/internal/usecase/recap/mocks/
+/backend/recap/internal/usecase/sharedrecap/mocks/
 
 # Go workspace file
 go.work
