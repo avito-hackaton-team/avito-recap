@@ -156,6 +156,8 @@ func (s *recapService) Get(ctx context.Context, recapID uuid.UUID) (entity.Recap
 }
 
 // buildRecap collects the metrics, applies the rules and assembles the slides.
+//
+//nolint:cyclop // a lot of error checks
 func (s *recapService) buildRecap(
 	ctx context.Context,
 	profileID uuid.UUID,

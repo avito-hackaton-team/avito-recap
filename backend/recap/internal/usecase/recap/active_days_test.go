@@ -10,9 +10,11 @@ import (
 	"github.com/avito-hackaton-team/avito-recap/backend/recap/internal/entity"
 )
 
-func day(year int, month time.Month, dayOfMonth int, actions int64) entity.DayActivity {
+const testYear = 2026
+
+func day(month time.Month, dayOfMonth int, actions int64) entity.DayActivity {
 	return entity.DayActivity{
-		Date:    time.Date(year, month, dayOfMonth, 0, 0, 0, 0, time.UTC),
+		Date:    time.Date(testYear, month, dayOfMonth, 0, 0, 0, 0, time.UTC),
 		Actions: actions,
 	}
 }
@@ -23,9 +25,9 @@ func TestActiveDaysSlideCarriesTheYearGrid(t *testing.T) {
 	input := slideInput{
 		activity: entity.UserActivity{ActiveDays: 3},
 		days: []entity.DayActivity{
-			day(2026, time.January, 4, 7),
-			day(2026, time.March, 14, 23),
-			day(2026, time.December, 31, 2),
+			day(time.January, 4, 7),
+			day(time.March, 14, 23),
+			day(time.December, 31, 2),
 		},
 	}
 
@@ -66,9 +68,9 @@ func TestPeakDayPrefersTheEarlierDateOnATie(t *testing.T) {
 	t.Parallel()
 
 	days := dayActivityRefs([]entity.DayActivity{
-		day(2026, time.February, 2, 9),
-		day(2026, time.May, 5, 14),
-		day(2026, time.August, 8, 14),
+		day(time.February, 2, 9),
+		day(time.May, 5, 14),
+		day(time.August, 8, 14),
 	})
 
 	peak := peakDay(days)
@@ -81,9 +83,9 @@ func TestDayActivityRefsDropDaysWithoutActions(t *testing.T) {
 	t.Parallel()
 
 	refs := dayActivityRefs([]entity.DayActivity{
-		day(2026, time.June, 1, 0),
-		day(2026, time.June, 2, 5),
-		day(2026, time.June, 3, -1),
+		day(time.June, 1, 0),
+		day(time.June, 2, 5),
+		day(time.June, 3, -1),
 	})
 
 	require.Len(t, refs, 1)
