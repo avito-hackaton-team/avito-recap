@@ -1822,7 +1822,7 @@ body {
   --base: 8px;
   --step: 7.5px;
   --scene: 480px;
-  --plate-shift: -56%;
+  --plate-lift: 30px;
 
   display: flex;
   flex-direction: column;
@@ -1851,7 +1851,8 @@ body {
   padding: 20px 24px 24px 32px;
   position: absolute;
   top: 50%;
-  transform: translate(-50%, var(--plate-shift)) rotateX(var(--tilt)) rotateZ(calc(-1 * var(--spin)));
+  transform: translate(-50%, -50%) translateY(calc(-1 * var(--plate-lift))) rotateX(var(--tilt))
+    rotateZ(calc(-1 * var(--spin)));
   transform-style: preserve-3d;
 }
 
@@ -1942,18 +1943,26 @@ body {
 }
 
 .year-board__label {
+  align-items: center;
   background: linear-gradient(180deg, #ffffff, #e8f0f7);
   border-radius: 5px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
     0 1px 0 rgba(11, 39, 64, 0.14),
     0 3px 5px rgba(11, 39, 64, 0.12);
+  box-sizing: border-box;
   color: #6b7683;
+  display: flex;
   font-size: 10px;
   font-weight: 800;
+  /* Высота фиксирована по клетке: иначе метрики шрифта в другом движке растят
+     строку, за ней всю плиту, и доска выходит за края сцены. */
+  height: var(--cell);
+  justify-content: center;
   letter-spacing: 0.06em;
   line-height: 1;
-  padding: 4px 6px;
+  overflow: hidden;
+  padding: 0 6px;
   text-align: center;
   transform: translateZ(10px) rotateZ(var(--spin)) rotateX(calc(-1 * var(--tilt)));
   transform-origin: 100% 100%;
@@ -2089,6 +2098,9 @@ body {
   opacity: 0.35;
 }
 
+/* Плита развёрнута трансформацией и потому рисуется поверх соседей по потоку:
+   легенде и подписи нужен свой слой, иначе край доски и её тень ложатся на
+   текст. */
 .year-board__legend {
   align-items: center;
   color: #77828f;
@@ -2099,7 +2111,9 @@ body {
   font-weight: 600;
   justify-content: center;
   line-height: 1;
+  position: relative;
   row-gap: 6px;
+  z-index: 1;
 }
 
 .year-board__legend-title {
@@ -2153,7 +2167,9 @@ body {
   max-width: 100%;
   min-height: 70px;
   padding: 12px 22px;
+  position: relative;
   text-align: center;
+  z-index: 1;
 }
 
 .year-board__caption-title {
@@ -2188,7 +2204,7 @@ body {
 
   .year-board__label {
     font-size: 9px;
-    padding: 3px 5px;
+    padding: 0 5px;
   }
 
   .year-board__caption {
@@ -2213,11 +2229,19 @@ body {
     --base: 7px;
     --step: 6.5px;
     --scene: 396px;
+    --plate-lift: 25px;
 
     gap: 12px;
   }
 
   .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 12px 0 #c7d1da,
+      0 15px 0 #bfcad4,
+      0 30px 44px rgba(21, 21, 26, 0.2);
     padding: 18px 20px 20px 28px;
   }
 
@@ -2235,18 +2259,24 @@ body {
     --base: 6px;
     --step: 5.5px;
     --scene: 380px;
-    --plate-shift: -50%;
+    --plate-lift: 0px;
 
     gap: 10px;
   }
 
   .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 12px 0 #c7d1da,
+      0 24px 34px rgba(21, 21, 26, 0.18);
     padding: 16px 18px 18px 24px;
   }
 
   .year-board__label {
     font-size: 9px;
-    padding: 3px 5px;
+    padding: 0 5px;
   }
 
   .year-board__legend {
@@ -2275,18 +2305,23 @@ body {
     --base: 5px;
     --step: 4.5px;
     --scene: 300px;
-    --plate-shift: -53%;
+    --plate-lift: 14px;
 
     gap: 4px;
   }
 
   .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 18px 26px rgba(21, 21, 26, 0.16);
     padding: 12px 14px 14px 18px;
   }
 
   .year-board__label {
     font-size: 8px;
-    padding: 2px 4px;
+    padding: 0 4px;
   }
 
   .year-board__caption {
