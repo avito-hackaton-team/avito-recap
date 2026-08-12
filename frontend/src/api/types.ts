@@ -109,6 +109,13 @@ export interface StatTile {
   label: string;
 }
 
+/** День с активностью. Дни без действий бэкенд не присылает. */
+export interface DayActivity {
+  /** ISO-дата, `2026-03-14`. */
+  date: string;
+  actions: number;
+}
+
 interface SlideBase {
   title: string;
   subtitle?: string;
@@ -117,7 +124,12 @@ interface SlideBase {
 
 export type Slide =
   | (SlideBase & { type: 'intro'; year: number })
-  | (SlideBase & { type: 'active_days'; activeDays: number })
+  | (SlideBase & {
+      type: 'active_days';
+      activeDays: number;
+      days?: DayActivity[];
+      peak?: DayActivity | null;
+    })
   | (SlideBase & { type: 'views'; views: number })
   | (SlideBase & {
       type: 'favorites';

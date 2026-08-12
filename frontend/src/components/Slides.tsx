@@ -1,3 +1,4 @@
+import { YearBoard } from './YearBoard';
 import type {
   Archetype,
   ArchetypeCode,
@@ -106,8 +107,12 @@ export function SlideView({
             </p>
           </div>
 
-          <div className="active-days__visual" aria-hidden="true">
-            <img src={artUrl('active_days')} alt="" />
+          <div className="active-days__visual">
+            {slide.days && slide.days.length > 0 ? (
+              <YearBoard days={slide.days} peak={slide.peak} />
+            ) : (
+              <img src={artUrl('active_days')} alt="" aria-hidden="true" />
+            )}
           </div>
         </section>
       );

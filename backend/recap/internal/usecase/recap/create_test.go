@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
@@ -248,6 +249,7 @@ func TestRecapService_Create(t *testing.T) {
 					Return(nil, nil).
 					Once()
 				expectSeasonActivity(ctx, dependencies.activity, profileID, maxRecapYear, nil)
+				expectDailyActivity(ctx, dependencies.activity, profileID, maxRecapYear, nil)
 				dependencies.activity.EXPECT().
 					CountCategories(ctx).
 					Return(0, categoryCountError).
@@ -269,6 +271,7 @@ func TestRecapService_Create(t *testing.T) {
 					Return(nil, nil).
 					Once()
 				expectSeasonActivity(ctx, dependencies.activity, profileID, maxRecapYear, nil)
+				expectDailyActivity(ctx, dependencies.activity, profileID, maxRecapYear, nil)
 				dependencies.activity.EXPECT().
 					CountCategories(ctx).
 					Return(1, nil).
@@ -395,6 +398,15 @@ func TestRecapService_Create_PersistsGeneratedRecap(t *testing.T) {
 		profileID,
 		maxRecapYear,
 		[]entity.CategoryActivity{categoryActivity},
+	)
+	expectDailyActivity(
+		ctx,
+		dependencies.activity,
+		profileID,
+		maxRecapYear,
+		[]entity.DayActivity{
+			{Date: time.Date(maxRecapYear, time.March, 14, 0, 0, 0, 0, time.UTC), Actions: 23},
+		},
 	)
 	dependencies.activity.EXPECT().
 		CountCategories(ctx).

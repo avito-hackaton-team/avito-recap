@@ -83,6 +83,11 @@ type CategoryActivity struct {
 	Sales            int64
 }
 
+type DayActivity struct {
+	Date    time.Time
+	Actions int64
+}
+
 // CategoryScore is a category ranked by the weighted activity score.
 type CategoryScore struct {
 	CategoryID  uuid.UUID

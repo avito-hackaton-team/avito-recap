@@ -725,6 +725,33 @@ components:
               minimum: 0
               maximum: 366
               example: 243
+            days:
+              type: array
+              description: >-
+                Days that had at least one action, ordered by date. Days without
+                activity are omitted: the client draws the empty cells of the
+                year grid itself.
+              items:
+                $ref: "#/components/schemas/DayActivity"
+            peak:
+              $ref: "#/components/schemas/DayActivity"
+
+    DayActivity:
+      type: object
+      description: Number of actions on a single calendar day (UTC).
+      required:
+        - date
+        - actions
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-03-14"
+        actions:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 23
 
     ViewsSlide:
       allOf:

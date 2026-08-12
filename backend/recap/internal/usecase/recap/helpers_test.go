@@ -50,6 +50,19 @@ func expectMissingRecap(
 		Once()
 }
 
+func expectDailyActivity(
+	ctx context.Context,
+	repository *recapmocks.MockActivityRepository,
+	profileID uuid.UUID,
+	year int,
+	days []entity.DayActivity,
+) {
+	repository.EXPECT().
+		ListDailyActivity(ctx, profileID, entity.YearPeriod(year)).
+		Return(days, nil).
+		Once()
+}
+
 func expectSeasonActivity(
 	ctx context.Context,
 	repository *recapmocks.MockActivityRepository,
