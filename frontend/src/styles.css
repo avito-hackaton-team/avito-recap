@@ -1822,6 +1822,7 @@ body {
   --base: 8px;
   --step: 7.5px;
   --scene: 480px;
+  --plate-shift: -56%;
 
   display: flex;
   flex-direction: column;
@@ -1850,7 +1851,7 @@ body {
   padding: 20px 24px 24px 32px;
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -56%) rotateX(var(--tilt)) rotateZ(calc(-1 * var(--spin)));
+  transform: translate(-50%, var(--plate-shift)) rotateX(var(--tilt)) rotateZ(calc(-1 * var(--spin)));
   transform-style: preserve-3d;
 }
 
@@ -2233,7 +2234,8 @@ body {
     --row-gap: 15px;
     --base: 6px;
     --step: 5.5px;
-    --scene: 330px;
+    --scene: 380px;
+    --plate-shift: -50%;
 
     gap: 10px;
   }
@@ -2265,20 +2267,21 @@ body {
   }
 }
 
-@media (max-height: 620px) {
+@media (max-height: 640px) {
   .year-board {
     --cell: 12px;
-    --column-gap: 7px;
+    --column-gap: 6px;
     --row-gap: 12px;
     --base: 5px;
     --step: 4.5px;
-    --scene: 262px;
+    --scene: 300px;
+    --plate-shift: -53%;
 
-    gap: 8px;
+    gap: 4px;
   }
 
   .year-board__plate {
-    padding: 14px 16px 16px 20px;
+    padding: 12px 14px 14px 18px;
   }
 
   .year-board__label {
@@ -2287,8 +2290,8 @@ body {
   }
 
   .year-board__caption {
-    min-height: 48px;
-    padding: 7px 14px;
+    min-height: 40px;
+    padding: 5px 12px;
   }
 }
 
