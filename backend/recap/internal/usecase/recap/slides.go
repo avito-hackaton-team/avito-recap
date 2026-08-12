@@ -103,9 +103,16 @@ type (
 		Year int32 `json:"year"`
 	}
 
+	dayActivityRef struct {
+		Date    string `json:"date"`
+		Actions int32  `json:"actions"`
+	}
+
 	activeDaysSlide struct {
 		slideBase
-		ActiveDays int32 `json:"activeDays"`
+		ActiveDays int32            `json:"activeDays"`
+		Days       []dayActivityRef `json:"days,omitempty"`
+		Peak       *dayActivityRef  `json:"peak,omitempty"`
 	}
 
 	viewsSlide struct {
@@ -181,6 +188,7 @@ type slideInput struct {
 	activity                entity.UserActivity
 	categories              []entity.CategoryScore
 	seasons                 []seasonLeader
+	days                    []entity.DayActivity
 	archetype               entity.Archetype
 	oldestFavorite          *entity.FavoriteListingPreview
 	categoryRecommendations []entity.ListingPreview
@@ -233,6 +241,8 @@ func buildIntroSlide(input slideInput) (any, bool) {
 }
 
 func buildActiveDaysSlide(input slideInput) (any, bool) {
+	days := dayActivityRefs(input.days)
+
 	return activeDaysSlide{
 		slideBase: slideBase{
 			Type:     slideActiveDays,
@@ -240,7 +250,48 @@ func buildActiveDaysSlide(input slideInput) (any, bool) {
 			Subtitle: activeDaysHeadline(input.activity.ActiveDays),
 		},
 		ActiveDays: toInt32(input.activity.ActiveDays),
+		Days:       days,
+		Peak:       peakDay(days),
 	}, true
+}
+
+func dayActivityRefs(days []entity.DayActivity) []dayActivityRef {
+	if len(days) == 0 {
+		return nil
+	}
+
+	refs := make([]dayActivityRef, 0, len(days))
+	for _, day := range days {
+		if day.Actions <= 0 {
+			continue
+		}
+
+		refs = append(refs, dayActivityRef{
+			Date:    day.Date.UTC().Format(time.DateOnly),
+			Actions: toInt32(day.Actions),
+		})
+	}
+
+	if len(refs) == 0 {
+		return nil
+	}
+
+	return refs
+}
+
+func peakDay(days []dayActivityRef) *dayActivityRef {
+	if len(days) == 0 {
+		return nil
+	}
+
+	best := days[0]
+	for _, day := range days[1:] {
+		if day.Actions > best.Actions {
+			best = day
+		}
+	}
+
+	return &best
 }
 
 func buildViewsSlide(input slideInput) (any, bool) {

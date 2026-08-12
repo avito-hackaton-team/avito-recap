@@ -32,6 +32,12 @@ type (
 			period entity.Period,
 		) ([]entity.CategoryActivity, error)
 
+		ListDailyActivity(
+			ctx context.Context,
+			userID uuid.UUID,
+			period entity.Period,
+		) ([]entity.DayActivity, error)
+
 		CountCategories(ctx context.Context) (int64, error)
 	}
 
@@ -191,6 +197,11 @@ func (s *recapService) buildRecap(
 		return entity.Recap{}, err
 	}
 
+	days, err := s.activityRepository.ListDailyActivity(ctx, profileID, period)
+	if err != nil {
+		return entity.Recap{}, fmt.Errorf("list daily activity: %w", err)
+	}
+
 	totalCategories, err := s.activityRepository.CountCategories(ctx)
 	if err != nil {
 		return entity.Recap{}, fmt.Errorf("count categories: %w", err)
@@ -203,6 +214,7 @@ func (s *recapService) buildRecap(
 		activity:                activity,
 		categories:              categoryData.categories,
 		seasons:                 seasons,
+		days:                    days,
 		archetype:               archetype,
 		oldestFavorite:          oldestFavorite,
 		categoryRecommendations: categoryData.recommendations,
