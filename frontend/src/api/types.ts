@@ -21,11 +21,6 @@ export interface ProfileList {
   items: Profile[];
 }
 
-export interface CreateRecapRequest {
-  profileId: Uuid;
-  year: number;
-}
-
 export interface CreateRecapResponse {
   id: Uuid;
 }
@@ -142,6 +137,7 @@ export type Slide =
       category: CategoryRef;
       subcategory?: CategoryRef | null;
       share?: number;
+      quizOptions?: CategoryRef[];
       recommendations?: ListingRef[];
     })
   | (SlideBase & { type: 'purchases'; purchases: number; badge?: Badge | null })
@@ -155,8 +151,6 @@ export type Slide =
   | (SlideBase & { type: 'interests'; periods: PeriodInterest[]; shiftSummary?: string })
   | (SlideBase & { type: 'archetype'; archetype: Archetype })
   | (SlideBase & { type: 'final'; stats?: StatTile[]; actions?: Cta[] });
-
-export type SlideType = Slide['type'];
 
 export interface Recap {
   id: Uuid;

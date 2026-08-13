@@ -810,6 +810,16 @@ components:
               maximum: 100
               description: Доля активности в этой категории, %
               example: 41
+            quizOptions:
+              type: array
+              description: |
+                Опциональные варианты для викторины перед раскрытием любимой категории.
+                Поле отсутствует или содержит меньше двух элементов — категория раскрывается сразу.
+                Два или три элемента — frontend показывает интерактивный вопрос.
+                Варианты взяты только из реальных top-категорий активности пользователя.
+              maxItems: 3
+              items:
+                $ref: "#/components/schemas/CategoryRef"
             recommendations:
               type: array
               description: |

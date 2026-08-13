@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import type { DayActivity } from '../api/types';
+import { buildYearRows, WEEKS_IN_MONTH } from '../lib/recapLogic';
+import type { YearMonthRow } from '../lib/recapLogic';
 
 interface YearBoardProps {
   days: DayActivity[];
@@ -38,27 +40,11 @@ const MONTHS_FULL = [
   'Декабрь',
 ];
 
-const WEEKS_IN_MONTH = 5;
-
-interface Column {
-  key: string;
-  actions: number;
-  level: number;
-  peak: boolean;
-}
-
-interface MonthRow {
-  month: number;
-  columns: Column[];
-  actions: number;
-  activeDays: number;
-}
-
 export function YearBoard({ days, peak }: YearBoardProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
 
-  const rows = useMemo(() => buildRows(days, peak ?? null), [days, peak]);
+  const rows = useMemo(() => buildYearRows(days, peak ?? null), [days, peak]);
 
   if (rows.length === 0) {
     return null;
@@ -124,7 +110,7 @@ export function YearBoard({ days, peak }: YearBoardProps) {
       </div>
 
       <div className="year-board__legend">
-        <span className="year-board__legend-title">Действий за неделю</span>
+        <span className="year-board__legend-title">Действий за период месяца</span>
 
         <span className="year-board__legend-scale">
           <span className="year-board__legend-bound">реже</span>
@@ -159,14 +145,14 @@ interface Caption {
   text: string;
 }
 
-function monthCaption(row: MonthRow): Caption {
+function monthCaption(row: YearMonthRow): Caption {
   return {
     title: MONTHS_FULL[row.month] ?? '',
     text: `${formatActions(row.actions)} · ${formatActiveDays(row.activeDays)}`,
   };
 }
 
-function monthSummary(row: MonthRow): string {
+function monthSummary(row: YearMonthRow): string {
   const { title, text } = monthCaption(row);
 
   return `${title}: ${text}`;
@@ -176,7 +162,7 @@ function peakCaption(peak: DayActivity | null): Caption {
   if (!peak) {
     return {
       title: null,
-      text: 'Каждый столбик — неделя вашего года. Наведите на месяц, чтобы рассмотреть.',
+      text: 'Каждый столбик — семидневный период месяца. Выберите месяц, чтобы рассмотреть.',
     };
   }
 
@@ -232,93 +218,4 @@ function formatDate(date: string): string {
     month: 'long',
     timeZone: 'UTC',
   }).format(parsed);
-}
-
-function buildRows(days: DayActivity[], peak: DayActivity | null): MonthRow[] {
-  if (days.length === 0) {
-    return [];
-  }
-
-  const byMonth = new Map<number, Map<number, number>>();
-
-  for (const day of days) {
-    const parsed = parseDate(day.date);
-    if (!parsed) {
-      continue;
-    }
-
-    const month = byMonth.get(parsed.month) ?? new Map<number, number>();
-
-    month.set(parsed.week, (month.get(parsed.week) ?? 0) + day.actions);
-    byMonth.set(parsed.month, month);
-  }
-
-  const peakDate = peak ? parseDate(peak.date) : null;
-  const max = Math.max(...[...byMonth.values()].flatMap((month) => [...month.values()]));
-
-  const rows: MonthRow[] = [];
-
-  for (let month = 0; month < 12; month += 1) {
-    const slots = byMonth.get(month);
-    const columns: Column[] = [];
-    let actions = 0;
-
-    for (let week = 0; week < WEEKS_IN_MONTH; week += 1) {
-      const value = slots?.get(week) ?? 0;
-      actions += value;
-
-      columns.push({
-        key: `${month}-${week}`,
-        actions: value,
-        level: intensity(value, max),
-        peak: peakDate !== null && peakDate.month === month && peakDate.week === week,
-      });
-    }
-
-    rows.push({
-      month,
-      columns,
-      actions,
-      activeDays: countActiveDays(days, month),
-    });
-  }
-
-  return rows;
-}
-
-function countActiveDays(days: DayActivity[], month: number): number {
-  let count = 0;
-
-  for (const day of days) {
-    const parsed = parseDate(day.date);
-    if (parsed && parsed.month === month && day.actions > 0) {
-      count += 1;
-    }
-  }
-
-  return count;
-}
-
-function intensity(value: number, max: number): number {
-  if (value <= 0 || max <= 0) {
-    return 0;
-  }
-
-  return Math.min(4, Math.max(1, Math.ceil((value / max) * 4)));
-}
-
-function parseDate(date: string): { month: number; day: number; week: number } | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
-  if (!match?.[2] || !match[3]) {
-    return null;
-  }
-
-  const month = Number(match[2]) - 1;
-  const day = Number(match[3]);
-
-  if (month < 0 || month > 11 || day < 1 || day > 31) {
-    return null;
-  }
-
-  return { month, day, week: Math.min(WEEKS_IN_MONTH - 1, Math.floor((day - 1) / 7)) };
 }

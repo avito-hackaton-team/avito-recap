@@ -4,7 +4,7 @@ import { ApiError, createRecap, getRecap, getSharedRecap, userMessage } from './
 import type { ErrorCode, Profile, Recap, SharedRecap } from './api/types';
 import { GeneratingScreen } from './screens/GeneratingScreen';
 import { LowActivityScreen, RecapErrorScreen } from './screens/RecapFailureScreen';
-import { PublicLoadingScreen } from './screens/PublicLoadingScreen';
+import { PublicFailureScreen, PublicLoadingScreen } from './screens/PublicLoadingScreen';
 import { PublicRecapScreen } from './screens/PublicRecapScreen';
 import { StartScreen } from './screens/StartScreen';
 import { StoryScreen } from './screens/StoryScreen';
@@ -137,14 +137,6 @@ export function App() {
       return <PublicRecapScreen recap={screen.recap} />;
 
     case 'public-failed':
-      return (
-        <div className="state">
-          <p className="state__title">Публичные итоги не открылись</p>
-          <p className="state__note">{screen.message}</p>
-          <a className="button button--light" href="/">
-            Создать свои итоги
-          </a>
-        </div>
-      );
+      return <PublicFailureScreen message={screen.message} />;
   }
 }

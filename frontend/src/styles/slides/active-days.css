@@ -1,0 +1,692 @@
+/* Первый факт истории: активные дни. */
+.story--active-days {
+  background:
+    radial-gradient(circle at 88% 22%, rgb(0 170 255 / 22%), transparent 34%),
+    radial-gradient(circle at 14% 88%, rgb(151 207 38 / 14%), transparent 28%), #f2f2f4;
+}
+
+.slide--active-days {
+  animation: active-days-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  gap: 64px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+}
+
+.active-days__copy {
+  gap: 22px;
+  max-width: 620px;
+}
+
+.active-days__act {
+  align-items: center;
+  background: var(--recap-blue);
+  border-radius: 999px;
+  color: var(--recap-ink);
+  display: inline-flex;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+  min-height: 44px;
+  padding: 9px 18px;
+}
+
+.active-days__metric {
+  display: grid;
+  gap: 4px;
+}
+
+.active-days__metric strong {
+  color: var(--recap-blue);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(104px, 11vw, 164px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 0.82;
+}
+
+.active-days__metric h1 {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(32px, 3vw, 44px);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.active-days__headline {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+  max-width: 28ch;
+}
+
+.active-days__note {
+  color: var(--recap-ink-secondary);
+  font-size: clamp(21px, 1.8vw, 24px);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 42ch;
+}
+
+.active-days__visual {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 440px;
+}
+
+.active-days__visual img {
+  display: block;
+  max-width: 480px;
+  width: 100%;
+}
+
+.year-board {
+  --tilt: 44deg;
+  --spin: 30deg;
+  --cell: 20px;
+  --column-gap: 13px;
+  --row-gap: 20px;
+  --base: 8px;
+  --step: 7.5px;
+  --scene: 480px;
+  --plate-lift: 30px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.year-board__scene {
+  height: var(--scene);
+  perspective: 1200px;
+  position: relative;
+  width: 100%;
+}
+
+.year-board__plate {
+  background: linear-gradient(155deg, #ffffff 0%, #eef4f8 100%);
+  border-radius: 26px;
+  box-shadow:
+    0 3px 0 #dfe6ec,
+    0 6px 0 #d7dfe6,
+    0 9px 0 #cfd8e0,
+    0 12px 0 #c7d1da,
+    0 15px 0 #bfcad4,
+    0 42px 60px rgba(21, 21, 26, 0.22);
+  left: 50%;
+  padding: 20px 24px 24px 32px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) translateY(calc(-1 * var(--plate-lift))) rotateX(var(--tilt))
+    rotateZ(calc(-1 * var(--spin)));
+  transform-style: preserve-3d;
+}
+
+.year-board__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--row-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  transform-style: preserve-3d;
+}
+
+.year-board__rows > li {
+  transform-style: preserve-3d;
+}
+
+.year-board__row {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  padding: 2px 4px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition:
+    opacity 160ms ease,
+    transform 200ms ease;
+  width: 100%;
+}
+
+.year-board__row::before {
+  background: rgba(0, 132, 255, 0.14);
+  border-radius: 9px;
+  content: '';
+  inset: -4px -8px;
+  opacity: 0;
+  position: absolute;
+  transform: translateZ(-1px);
+  transition: opacity 160ms ease;
+}
+
+.year-board__row:hover::before,
+.year-board__row:focus-visible::before,
+.year-board__row--active::before {
+  opacity: 1;
+}
+
+.year-board__row:hover,
+.year-board__row:focus-visible {
+  transform: translateZ(6px);
+}
+
+.year-board__row--active {
+  transform: translateZ(12px);
+}
+
+.year-board__row:hover .year-board__label,
+.year-board__row--active .year-board__label {
+  background: linear-gradient(180deg, #33baff, #0084ff);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 1px 0 rgba(0, 62, 122, 0.3),
+    0 3px 6px rgba(0, 82, 160, 0.32);
+  color: #ffffff;
+}
+
+.year-board__row--muted .year-board__cell[data-level] {
+  --bar: color-mix(in srgb, var(--tone, #e8eef3) 32%, #eff4f8);
+}
+
+.year-board__row--muted .year-board__bar {
+  box-shadow: 2px 4px 6px rgba(11, 39, 64, 0.09);
+}
+
+.year-board__row--muted .year-board__label {
+  background: #f1f5f9;
+  box-shadow: 0 1px 0 rgba(11, 39, 64, 0.07);
+  color: #a7b2be;
+}
+
+.year-board__row:focus-visible {
+  outline: 2px solid #0084ff;
+  outline-offset: 2px;
+}
+
+.year-board__label {
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff, #e8f0f7);
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0 rgba(11, 39, 64, 0.14),
+    0 3px 5px rgba(11, 39, 64, 0.12);
+  box-sizing: border-box;
+  color: #6b7683;
+  display: flex;
+  font-size: 10px;
+  font-weight: 800;
+  /* Высота фиксирована по клетке: иначе метрики шрифта в другом движке растят
+     строку, за ней всю плиту, и доска выходит за края сцены. */
+  height: var(--cell);
+  justify-content: center;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  flex: 0 0 42px;
+  min-width: 42px;
+  overflow: hidden;
+  overflow-wrap: normal;
+  padding: 0 6px;
+  text-align: center;
+  transform: translateZ(10px) rotateZ(var(--spin)) rotateX(calc(-1 * var(--tilt)));
+  transform-origin: 100% 100%;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
+  white-space: nowrap;
+}
+
+.year-board__cells {
+  display: grid;
+  gap: var(--column-gap);
+  grid-template-columns: repeat(var(--columns, 5), var(--cell));
+  transform-style: preserve-3d;
+}
+
+.year-board__cell {
+  --height: calc(var(--base) + var(--level, 0) * var(--step));
+  --bar: var(--tone, #e8eef3);
+
+  background: rgba(21, 21, 26, 0.05);
+  border-radius: 3px;
+  height: var(--cell);
+  pointer-events: none;
+  position: relative;
+  transform-style: preserve-3d;
+  width: 100%;
+}
+
+.year-board__bar {
+  border-radius: 3px;
+  bottom: 0;
+  box-shadow: 3px 5px 7px rgba(11, 39, 64, 0.2);
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-style: preserve-3d;
+}
+
+.year-board__cell[data-level='0'] .year-board__bar {
+  display: none;
+}
+
+.year-board__bar::before {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--bar, #a8deff) 74%, #0b2740),
+    color-mix(in srgb, var(--bar, #a8deff) 94%, #0b2740)
+  );
+  border-radius: 0 3px 0 0;
+  bottom: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  content: '';
+  height: var(--height);
+  left: 0;
+  position: absolute;
+  right: 0;
+  transform: rotateX(-90deg);
+  transform-origin: 50% 100%;
+}
+
+.year-board__bar::after {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--bar, #a8deff) 56%, #0b2740),
+    color-mix(in srgb, var(--bar, #a8deff) 78%, #0b2740)
+  );
+  border-radius: 0;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.22);
+  content: '';
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: rotateY(-90deg);
+  transform-origin: 0 0;
+  width: var(--height);
+}
+
+.year-board__bar-top {
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--bar, #a8deff) 78%, #ffffff),
+    var(--bar, #a8deff)
+  );
+  border-radius: 0 3px 0 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateZ(var(--height));
+}
+
+.year-board [data-level='1'] {
+  --tone: #b6e4ff;
+}
+
+.year-board [data-level='2'] {
+  --tone: #63c9ff;
+}
+
+.year-board [data-level='3'] {
+  --tone: #12a8ff;
+}
+
+.year-board [data-level='4'] {
+  --tone: #0060d1;
+}
+
+.year-board__cell--peak[data-level],
+.year-board__legend-cell--peak[data-level] {
+  --tone: #ff4053;
+}
+
+.year-board__cell--peak::after {
+  background: #ff4053;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  content: '';
+  height: 11px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) translateZ(calc(var(--height) + 16px))
+    rotateZ(var(--spin)) rotateX(calc(-1 * var(--tilt)));
+  width: 11px;
+}
+
+.year-board__row--muted .year-board__cell--peak::after {
+  opacity: 0.35;
+}
+
+/* Плита развёрнута трансформацией и потому рисуется поверх соседей по потоку:
+   легенде и подписи нужен свой слой, иначе край доски и её тень ложатся на
+   текст. */
+.year-board__legend {
+  align-items: center;
+  color: #77828f;
+  column-gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1;
+  position: relative;
+  row-gap: 6px;
+  z-index: 1;
+}
+
+.year-board__legend-title {
+  color: #55606d;
+}
+
+.year-board__legend-scale {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.year-board__legend-bound {
+  color: #55606d;
+}
+
+.year-board__legend-swatches {
+  display: flex;
+  gap: 3px;
+}
+
+.year-board__legend-cell {
+  background: var(--tone, #e5eaef);
+  border-radius: 3px;
+  display: block;
+  height: 11px;
+  width: 11px;
+}
+
+.year-board__legend-peak {
+  align-items: center;
+  color: #ff4053;
+  display: flex;
+  gap: 5px;
+  margin-left: 4px;
+}
+
+.year-board__caption {
+  align-items: center;
+  align-self: center;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(11, 39, 64, 0.06),
+    0 6px 18px rgba(11, 39, 64, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  margin: 0;
+  max-width: 100%;
+  min-height: 70px;
+  padding: 12px 22px;
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.year-board__caption-title {
+  color: #15151a;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.year-board__caption-text {
+  color: #6b7683;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@media (max-width: 1023px) {
+  .year-board {
+    --tilt: 42deg;
+    --spin: 28deg;
+    --cell: 14px;
+    --column-gap: 9px;
+    --row-gap: 13px;
+    --base: 5px;
+    --step: 5px;
+    --scene: 320px;
+  }
+
+  .year-board__plate {
+    padding: 18px 20px 22px;
+  }
+
+  .year-board__label {
+    font-size: 9px;
+    padding: 0 5px;
+  }
+
+  .year-board__caption {
+    min-height: 62px;
+    padding: 10px 16px;
+  }
+
+  .year-board__caption-title {
+    font-size: 15px;
+  }
+
+  .year-board__caption-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-height: 860px) and (min-width: 1024px) {
+  .year-board {
+    --cell: 17px;
+    --column-gap: 11px;
+    --row-gap: 17px;
+    --base: 7px;
+    --step: 6.5px;
+    --scene: 396px;
+    --plate-lift: 25px;
+
+    gap: 12px;
+  }
+
+  .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 12px 0 #c7d1da,
+      0 15px 0 #bfcad4,
+      0 30px 44px rgba(21, 21, 26, 0.2);
+    padding: 18px 20px 20px 28px;
+  }
+
+  .year-board__caption {
+    min-height: 62px;
+    padding: 10px 18px;
+  }
+}
+
+@media (max-height: 740px) and (min-width: 1024px) {
+  .year-board {
+    --cell: 15px;
+    --column-gap: 9px;
+    --row-gap: 15px;
+    --base: 6px;
+    --step: 5.5px;
+    --scene: 380px;
+    --plate-lift: 0px;
+
+    gap: 10px;
+  }
+
+  .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 12px 0 #c7d1da,
+      0 24px 34px rgba(21, 21, 26, 0.18);
+    padding: 16px 18px 18px 24px;
+  }
+
+  .year-board__label {
+    font-size: 9px;
+    padding: 0 5px;
+  }
+
+  .year-board__legend {
+    font-size: 11px;
+  }
+
+  .year-board__caption {
+    min-height: 54px;
+    padding: 8px 16px;
+  }
+
+  .year-board__caption-title {
+    font-size: 15px;
+  }
+
+  .year-board__caption-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-height: 640px) {
+  .year-board {
+    --cell: 12px;
+    --column-gap: 6px;
+    --row-gap: 12px;
+    --base: 5px;
+    --step: 4.5px;
+    --scene: 300px;
+    --plate-lift: 14px;
+
+    gap: 4px;
+  }
+
+  .year-board__plate {
+    box-shadow:
+      0 3px 0 #dfe6ec,
+      0 6px 0 #d7dfe6,
+      0 9px 0 #cfd8e0,
+      0 18px 26px rgba(21, 21, 26, 0.16);
+    padding: 12px 14px 14px 18px;
+  }
+
+  .year-board__label {
+    font-size: 8px;
+    padding: 0 4px;
+  }
+
+  .year-board__caption {
+    min-height: 40px;
+    padding: 5px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .year-board__row {
+    transition: none;
+  }
+}
+
+@keyframes active-days-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .slide--active-days {
+    align-content: center;
+    gap: 28px;
+    grid-template-columns: 1fr;
+  }
+
+  .active-days__visual {
+    justify-self: center;
+    min-height: 240px;
+    width: min(100%, 320px);
+  }
+
+  .active-days__visual img {
+    max-width: 240px;
+  }
+}
+
+@media (max-width: 639px) {
+  .slide--active-days {
+    align-content: start;
+    gap: 20px;
+  }
+
+  .active-days__copy {
+    gap: 14px;
+  }
+
+  .active-days__metric strong {
+    font-size: clamp(88px, 29vw, 128px);
+  }
+
+  .active-days__metric h1 {
+    font-size: 32px;
+  }
+
+  .active-days__headline {
+    font-size: 20px;
+  }
+
+  .active-days__note {
+    font-size: 20px;
+  }
+
+  .active-days__visual {
+    min-height: 190px;
+    width: min(100%, 240px);
+  }
+
+  .active-days__visual img {
+    max-width: 180px;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 640px) {
+  .slide--active-days {
+    align-content: start;
+  }
+
+  .active-days__visual {
+    min-height: 300px;
+  }
+
+  .active-days__visual img {
+    max-width: 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide--active-days {
+    animation: none;
+  }
+}
+

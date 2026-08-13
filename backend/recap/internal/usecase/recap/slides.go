@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"sort"
 	"strings"
 	"time"
 
@@ -129,10 +130,11 @@ type (
 
 	categorySlide struct {
 		slideBase
-		Category        categoryRef  `json:"category"`
-		Subcategory     *categoryRef `json:"subcategory,omitempty"`
-		Share           int32        `json:"share"`
-		Recommendations []listingRef `json:"recommendations,omitempty"`
+		Category        categoryRef   `json:"category"`
+		Subcategory     *categoryRef  `json:"subcategory,omitempty"`
+		Share           int32         `json:"share"`
+		QuizOptions     []categoryRef `json:"quizOptions,omitempty"`
+		Recommendations []listingRef  `json:"recommendations,omitempty"`
 	}
 
 	purchasesSlide struct {
@@ -405,8 +407,31 @@ func buildCategorySlide(input slideInput) (any, bool) {
 		Category:        categoryRef{ID: favorite.CategoryID, Title: favorite.Title},
 		Subcategory:     subcategoryRefOf(favorite),
 		Share:           share,
+		QuizOptions:     categoryQuizOptionsOf(input.categories),
 		Recommendations: listingRefsOf(input.categoryRecommendations),
 	}, true
+}
+
+func categoryQuizOptionsOf(categories []entity.CategoryScore) []categoryRef {
+	if len(categories) < 2 {
+		return nil
+	}
+
+	limit := min(3, len(categories))
+	options := make([]categoryRef, 0, limit)
+	for _, category := range categories[:limit] {
+		options = append(options, categoryRef{ID: category.CategoryID, Title: category.Title})
+	}
+
+	sort.Slice(options, func(i, j int) bool {
+		if options[i].Title != options[j].Title {
+			return options[i].Title < options[j].Title
+		}
+
+		return options[i].ID.String() < options[j].ID.String()
+	})
+
+	return options
 }
 
 func buildInterestsSlide(input slideInput) (any, bool) {
