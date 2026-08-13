@@ -1,9 +1,9 @@
 import { YearBoard } from './YearBoard';
+import { FinalRecapSlide } from './FinalRecapSlide';
+import { formatRecommendationFindingCount } from '../lib/recapLogic';
 import type {
   Archetype,
-  ArchetypeCode,
   Badge,
-  Cta,
   ListingRef,
   PeriodInterest,
   Season,
@@ -21,15 +21,6 @@ const SEASON_TITLES: Record<Season, string> = {
 function artUrl(name: string): string {
   return `/art/${name}.png`;
 }
-
-/** Плитки финального экрана переиспользуют иконки слайдов. */
-const STAT_ART: Record<string, string> = {
-  active_days: 'active_days',
-  views: 'views',
-  favorites: 'favorites',
-  messages: 'messages',
-  seasons: 'season-spring',
-};
 
 function formatNumber(value: number): string {
   return new Intl.NumberFormat('ru-RU').format(value);
@@ -59,6 +50,10 @@ export function SlideView({
   onExit,
   shareFeedback,
   shareUrl,
+  selectedCategoryQuizOptionId,
+  onSelectCategoryQuizOption,
+  favoriteCategorySlide,
+  interestSummary,
 }: {
   slide: Slide;
   profileName: string;
@@ -71,6 +66,10 @@ export function SlideView({
   onExit: () => void;
   shareFeedback?: { message: string; failed: boolean };
   shareUrl?: string;
+  selectedCategoryQuizOptionId?: string;
+  onSelectCategoryQuizOption?: (categoryId: string) => void;
+  favoriteCategorySlide?: Extract<Slide, { type: 'favorite_category' }>;
+  interestSummary?: string;
 }) {
   switch (slide.type) {
     case 'intro':
@@ -79,10 +78,10 @@ export function SlideView({
           <div className="slide__main intro__copy">
             <p className="intro__act">ВАШ ГОД СОБРАН</p>
             <h1 className="intro__title" id="intro-title">
-              {profileName}, ваш {slide.year} год на Авито собран
+              {profileName}, ваш {slide.year}&nbsp;год на Авито собран
             </h1>
             <p className="intro__subtitle">
-              В конце узнаете свой тип — сначала посмотрим, из чего он сложился.
+              В конце узнаете свой архетип — сначала посмотрим, из чего он сложился.
             </p>
           </div>
 
@@ -103,7 +102,7 @@ export function SlideView({
 
             {slide.subtitle ? <p className="active-days__headline">{slide.subtitle}</p> : null}
             <p className="active-days__note">
-              Дни, когда вы смотрели, сохраняли, общались или совершали сделки.
+              Дни, когда вы смотрели и сохраняли объявления, общались или совершали сделки.
             </p>
           </div>
 
@@ -128,10 +127,7 @@ export function SlideView({
               <h1 id="views-title">просмотров</h1>
             </div>
 
-            {slide.subtitle ? <p className="views__headline">{slide.subtitle}</p> : null}
-            <p className="views__note">
-              Столько раз объявления попадали в поле вашего внимания.
-            </p>
+            <p className="views__note">Столько раз объявления попадали в поле вашего внимания.</p>
           </div>
 
           <div className="views__visual" aria-hidden="true">
@@ -221,9 +217,7 @@ export function SlideView({
               <h1 id="purchases-title">{slide.subtitle ?? 'покупок'}</h1>
             </div>
 
-            <p className="purchases__note">
-              Столько находок перешли из поиска в вашу историю.
-            </p>
+            <p className="purchases__note">Столько находок перешли из поиска в вашу историю.</p>
           </div>
 
           <div className="purchases__visual">
@@ -268,15 +262,77 @@ export function SlideView({
     case 'favorite_category': {
       const recommendations = slide.recommendations?.slice(0, 3) ?? [];
       const hasRecommendations = recommendations.length > 0;
+      const quizOptions = slide.quizOptions ?? [];
+      const hasQuiz = quizOptions.length >= 2;
+
+      if (hasQuiz && !selectedCategoryQuizOptionId) {
+        return (
+          <section
+            className="slide slide--category slide--category-quiz"
+            aria-labelledby="category-quiz-title"
+          >
+            <div className="category-quiz__copy">
+              <p className="category__act">ВАШ ГЛАВНЫЙ ИНТЕРЕС</p>
+              <h1 id="category-quiz-title">
+                Как думаете, какая категория чаще всего приводила вас на Авито в этом году?
+              </h1>
+              <p>Выберите один вариант — результат откроется сразу</p>
+            </div>
+
+            <div className="category-quiz__options">
+              {quizOptions.map((option, optionIndex) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`category-quiz__option category-quiz__option--${optionIndex + 1}`}
+                  onClick={() => onSelectCategoryQuizOption?.(option.id)}
+                >
+                  <span className="category-quiz__letter">{['А', 'Б', 'В'][optionIndex]}</span>
+                  <span className="category-quiz__option-bottom">
+                    <strong>{option.title}</strong>
+                    <span className="category-quiz__arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+        );
+      }
+
+      const selectedQuizOption = quizOptions.find(
+        (option) => option.id === selectedCategoryQuizOptionId,
+      );
+      const quizWasAnswered = hasQuiz && Boolean(selectedCategoryQuizOptionId);
+      const quizWasCorrect = selectedCategoryQuizOptionId === slide.category.id;
 
       return (
         <section
-          className={`slide slide--category ${hasRecommendations ? 'slide--category-with-recommendations' : 'slide--category-solo'}`}
+          className={`slide slide--category ${hasRecommendations ? 'slide--category-with-recommendations' : 'slide--category-solo'} ${quizWasAnswered ? 'slide--category-has-feedback' : ''}`}
           aria-labelledby="category-title"
         >
           <div className="category__answer">
+            {quizWasAnswered ? (
+              <div
+                className={`category__feedback ${quizWasCorrect ? 'category__feedback--correct' : 'category__feedback--incorrect'}`}
+                role="status"
+                aria-live="polite"
+              >
+                <span aria-hidden="true">{quizWasCorrect ? '✓' : '×'}</span>
+                <strong>
+                  {quizWasCorrect
+                    ? 'Угадали!'
+                    : `Почти! Вы выбрали «${selectedQuizOption?.title ?? 'другую категорию'}»`}
+                </strong>
+              </div>
+            ) : null}
             <p className="category__act">ГЛАВНЫЙ ИНТЕРЕС</p>
-            <p className="category__lead">Чаще всего вас приводило сюда</p>
+            <p className="category__lead">
+              {quizWasAnswered && !quizWasCorrect
+                ? 'На самом деле чаще всего вас приводило сюда'
+                : 'Чаще всего вас приводило сюда'}
+            </p>
             <h1 className="category__title" id="category-title">
               {slide.category.title}
             </h1>
@@ -310,9 +366,11 @@ export function SlideView({
           {hasRecommendations ? (
             <>
               <div className="category-recommendation-stamp" aria-hidden="true">
-                <span>ПОДБОРКА ГОТОВА</span>
-                <strong>{recommendations.length}</strong>
-                <p>{formatRecommendationCount(recommendations.length)} по вашему интересу</p>
+                <span>МОЖЕТ ПОНРАВИТЬСЯ</span>
+                <strong>
+                  Ещё {formatRecommendationFindingCount(recommendations.length)} в вашем стиле
+                </strong>
+                <p>Собрали по вашим интересам →</p>
               </div>
               <div className="category__recommendations">
                 <div className="category__recommendation-list">
@@ -320,11 +378,6 @@ export function SlideView({
                     <ListingCard key={listing.id} listing={listing} variant="compact" />
                   ))}
                 </div>
-                {(slide.recommendations?.length ?? 0) > 1 ? (
-                  <p className="category__more">
-                    Ещё {Math.min((slide.recommendations?.length ?? 1) - 1, 2)}
-                  </p>
-                ) : null}
               </div>
             </>
           ) : (
@@ -393,76 +446,20 @@ export function SlideView({
       );
 
     case 'final': {
-      const primaryAction = selectPrimaryAction(slide.actions, recapArchetype.code);
-      const shareAction = slide.actions?.find((action) => action.action === 'share_recap');
-
       return (
-        <section className="slide slide--final" aria-labelledby="final-title">
-          <div className="final-summary">
-            <header className="final-summary__header">
-              <p className="final-summary__act">ВАШИ ИТОГИ {recapYear}</p>
-              <h1 id="final-title">
-                {recapArchetype.title}: вот каким был ваш {recapYear} год
-              </h1>
-              <p className="final-summary__subtitle">
-                {slide.subtitle ?? recapArchetype.description}
-              </p>
-            </header>
-
-            <div className="final-summary__actions">
-              <div className="final-summary__artwork" aria-hidden="true">
-                <img
-                  className="final-summary__art"
-                  src={artUrl(`archetype-${recapArchetype.code}`)}
-                  alt=""
-                />
-              </div>
-              <p className="final-summary__context">
-                Итоги готовы — можно продолжить с того, что вам ближе.
-              </p>
-
-              {primaryAction ? <NextStep cta={primaryAction} /> : null}
-
-              {shareAction ? (
-                <ActionButton
-                  cta={shareAction}
-                  onShare={onShare}
-                  disabled={shareDisabled}
-                  label={shareLabel ?? 'Поделиться итогами'}
-                />
-              ) : null}
-
-              <p
-                className={`final-summary__feedback${shareFeedback?.failed ? ' final-summary__feedback--error' : ''}`}
-                role="status"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {shareFeedback?.message ?? '\u00a0'}
-              </p>
-
-              {shareUrl ? (
-                <a className="final-summary__public-link" href={shareUrl}>
-                  Открыть публичную карточку
-                </a>
-              ) : null}
-
-              <button type="button" className="final-summary__exit" onClick={onExit}>
-                Выбрать другой профиль
-              </button>
-            </div>
-
-            {slide.stats?.length ? (
-              <ul
-                className={`final-summary__stats final-summary__stats--${Math.min(slide.stats.length, 4)}`}
-              >
-                {slide.stats.slice(0, 4).map((stat) => (
-                  <StatTile key={stat.code} stat={stat} />
-                ))}
-              </ul>
-            ) : null}
-          </div>
-        </section>
+        <FinalRecapSlide
+          slide={slide}
+          year={recapYear}
+          archetype={recapArchetype}
+          favoriteCategory={favoriteCategorySlide}
+          interestSummary={interestSummary}
+          onShare={onShare}
+          shareDisabled={shareDisabled}
+          shareLabel={shareLabel}
+          shareFeedback={shareFeedback}
+          shareUrl={shareUrl}
+          onExit={onExit}
+        />
       );
     }
 
@@ -478,7 +475,7 @@ function IntroCover({ year }: { year: number }) {
       <div className="intro__cover">
         <span className="intro__cover-label">Личный альбом</span>
         <strong>{year}</strong>
-        <span className="intro__cover-wordmark">Авито</span>
+        <img className="intro__cover-wordmark" src="/brand/avito-logo.svg" alt="" />
       </div>
     </div>
   );
@@ -546,84 +543,14 @@ function SeasonCard({ period }: { period: PeriodInterest }) {
       <div className="season-card__copy">
         <p className="season-card__season">{SEASON_TITLES[period.period]}</p>
         <h2>{period.category.title}</h2>
-        {period.subcategory ? <p className="season-card__subcategory">{period.subcategory.title}</p> : null}
+        {period.subcategory ? (
+          <p className="season-card__subcategory">{period.subcategory.title}</p>
+        ) : null}
       </div>
       {typeof period.weight === 'number' ? (
-        <p className="season-card__weight">&gt; {period.weight}% активности сезона</p>
+        <p className="season-card__weight">{period.weight}% активности сезона</p>
       ) : null}
     </li>
-  );
-}
-
-function StatTile({ stat }: { stat: NonNullable<Extract<Slide, { type: 'final' }>['stats']>[number] }) {
-  return (
-    <li className="final-stat">
-      <img src={artUrl(STAT_ART[stat.code] ?? 'final')} alt="" />
-      <strong>{formatNumber(stat.value)}</strong>
-      <span>{stat.label}</span>
-    </li>
-  );
-}
-
-function selectPrimaryAction(actions: Cta[] | undefined, archetype: ArchetypeCode): Cta | undefined {
-  if (!actions?.length) {
-    return undefined;
-  }
-
-  const productActions = actions.filter((action) => action.action !== 'share_recap');
-  const preferredAction: Partial<Record<ArchetypeCode, Cta['action']>> = {
-    collector: 'open_favorites',
-    dealmaker: 'create_listing',
-    explorer: 'open_category',
-    negotiator: 'open_category',
-  };
-
-  return (
-    productActions.find((action) => action.action === preferredAction[archetype]) ??
-    productActions[0]
-  );
-}
-
-function NextStep({ cta }: { cta: Cta }) {
-  return (
-    <div className="final-summary__next-step">
-      <span>Следующий шаг</span>
-      {cta.url ? (
-        <a className="button final-summary__primary" href={cta.url}>
-          {cta.title}
-        </a>
-      ) : (
-        <span className="button final-summary__primary" role="note">
-          {cta.title}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function ActionButton({
-  cta,
-  onShare,
-  disabled,
-  label,
-}: {
-  cta: Cta;
-  onShare: () => void;
-  disabled: boolean;
-  label?: string;
-}) {
-  if (cta.action === 'share_recap') {
-    return (
-      <button type="button" className="button button--accent" onClick={onShare} disabled={disabled}>
-        ⤴ {label ?? cta.title}
-      </button>
-    );
-  }
-
-  return (
-    <span className="button button--outline" role="note">
-      {cta.title}
-    </span>
   );
 }
 
@@ -648,9 +575,19 @@ function ListingCard({
           <ListingImageFallback title={listing.title} />
         )}
       </div>
-      <p className="listing-card__title">{listing.title}</p>
-      <p className="listing-card__price">{formatPrice(listing.price)}</p>
-      {addedAt ? <p className="listing-card__note">В избранном с {addedAt}</p> : null}
+      {variant === 'compact' ? (
+        <div className="listing-card__content">
+          <p className="listing-card__title">{listing.title}</p>
+          <p className="listing-card__price">{formatPrice(listing.price)}</p>
+          <p className="listing-card__action">Посмотреть объявление →</p>
+        </div>
+      ) : (
+        <>
+          <p className="listing-card__title">{listing.title}</p>
+          <p className="listing-card__price">{formatPrice(listing.price)}</p>
+          {addedAt ? <p className="listing-card__note">В избранном с {addedAt}</p> : null}
+        </>
+      )}
     </article>
   );
 }
@@ -666,19 +603,6 @@ function formatListingDate(value?: string): string | null {
   }
 
   return new Intl.DateTimeFormat('ru-RU').format(date);
-}
-
-function formatRecommendationCount(value: number): string {
-  const form = new Intl.PluralRules('ru-RU').select(value);
-
-  if (form === 'one') {
-    return 'свежее объявление';
-  }
-  if (form === 'few') {
-    return 'свежих объявления';
-  }
-
-  return 'свежих объявлений';
 }
 
 function ListingImageFallback({ title }: { title: string }) {

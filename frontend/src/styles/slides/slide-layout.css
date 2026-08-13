@@ -1,0 +1,131 @@
+/* Финал: единая наградная поверхность вместо набора dashboard-панелей. */
+.story--final {
+  background:
+    radial-gradient(circle at 12% 12%, rgb(0 170 255 / 17%), transparent 30%),
+    radial-gradient(circle at 88% 14%, rgb(161 105 247 / 22%), transparent 34%),
+    radial-gradient(circle at 82% 90%, rgb(151 207 38 / 13%), transparent 28%), #f2f2f4;
+}
+
+.story--final .story__segment--done {
+  background: var(--recap-violet);
+}
+@media (max-width: 1080px) {
+  .slide {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .slide--intro {
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+  }
+
+  .slide--category-solo .category__answer {
+    justify-self: end;
+    width: min(100%, 480px);
+  }
+
+  .slide--active-days,
+  .slide--views,
+  .slide--messages {
+    gap: clamp(96px, 8vw, 132px);
+    grid-template-columns: minmax(0, 540px) minmax(340px, 500px);
+    justify-content: center;
+    justify-self: center;
+    max-width: 1340px;
+    width: 100%;
+  }
+
+  .active-days__copy,
+  .views__copy,
+  .messages__copy {
+    justify-self: end;
+    width: min(100%, 480px);
+  }
+
+  .active-days__visual,
+  .views__visual,
+  .messages__visual {
+    justify-self: center;
+    width: min(100%, 500px);
+  }
+
+  .slide--purchases,
+  .slide--sales {
+    gap: clamp(96px, 8vw, 132px);
+    grid-template-columns: minmax(0, 500px) minmax(380px, 560px);
+    justify-content: center;
+    justify-self: center;
+    max-width: 1340px;
+    width: 100%;
+  }
+
+  .purchases__copy,
+  .sales__copy {
+    justify-self: end;
+    width: min(100%, 440px);
+  }
+
+  .purchases__visual,
+  .sales__visual {
+    justify-self: center;
+    width: min(100%, 560px);
+  }
+
+  .slide--favorites {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  }
+
+  .slide--favorites:not(.slide--favorites-featured) {
+    gap: clamp(96px, 8vw, 132px);
+    grid-template-columns: minmax(0, 520px) minmax(340px, 500px);
+    justify-content: center;
+    justify-self: center;
+    max-width: 1340px;
+    width: 100%;
+  }
+
+  .slide--favorites:not(.slide--favorites-featured) .favorites__copy {
+    justify-self: end;
+    width: min(100%, 440px);
+  }
+
+  .slide--favorites:not(.slide--favorites-featured) .favorites__visual {
+    justify-self: center;
+    width: min(100%, 500px);
+  }
+
+  .slide--favorites-featured {
+    align-content: center;
+    align-items: start;
+    gap: clamp(96px, 8vw, 132px);
+    grid-template-columns: minmax(0, 480px) minmax(400px, 460px);
+    justify-content: center;
+    justify-self: center;
+    max-width: 1280px;
+    width: 100%;
+  }
+
+  .slide--favorites-featured .favorites__copy,
+  .slide--favorites-featured .favorites__feature {
+    align-content: start;
+    min-height: 0;
+  }
+
+  .slide--favorites-featured .favorites__copy {
+    justify-self: end;
+    margin-top: 64px;
+    width: min(100%, 460px);
+  }
+
+  .slide--favorites-featured .favorites__feature {
+    justify-self: center;
+    width: min(100%, 460px);
+  }
+}
+
+.slide__main {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
