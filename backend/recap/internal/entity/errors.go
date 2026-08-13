@@ -11,6 +11,12 @@ var (
 
 	ErrRecapNotFound = errors.New("recap not found")
 
+	ErrRecommendationNotFound = errors.New("recommendation not found")
+
+	ErrFavoriteCategoryNotFound = errors.New("favorite category not found")
+
+	ErrUnsupportedRecapAction = errors.New("unsupported recap action")
+
 	ErrNotEnoughActivity = errors.New("not enough activity to build a recap")
 
 	ErrSharedRecapTokenInvalid = errors.New("shared recap token is invalid")
