@@ -57,7 +57,7 @@
   align-self: center;
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   justify-self: center;
   list-style: none;
   margin: 0;
@@ -74,8 +74,8 @@
   box-shadow: none;
   display: grid;
   gap: 10px 16px;
-  grid-template-columns: 88px minmax(0, 1fr);
-  grid-template-rows: minmax(72px, auto) auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 82px minmax(0, 1fr) auto;
   min-height: 148px;
   min-width: 0;
   overflow: hidden;
@@ -106,7 +106,7 @@
 .season-card__media {
   align-items: center;
   display: flex;
-  grid-row: 1 / -1;
+  grid-row: 1;
   height: 82px;
   justify-content: center;
 }
@@ -122,8 +122,8 @@
   align-content: start;
   display: grid;
   gap: 7px;
-  justify-items: start;
-  text-align: left;
+  justify-items: center;
+  text-align: center;
 }
 
 .season-card__season {
@@ -151,16 +151,21 @@
 }
 
 .season-card__weight {
+  align-items: center;
   background: color-mix(in srgb, var(--season-accent) 15%, white);
   border-radius: 12px;
   color: var(--recap-ink);
+  display: inline-flex;
   font-size: 13px;
   font-weight: 700;
+  justify-self: center;
   line-height: 1.3;
   margin: 0;
+  max-width: 100%;
   padding: 9px 10px;
   text-align: center;
-  width: 100%;
+  white-space: nowrap;
+  width: fit-content;
 }
 
 @keyframes interests-enter {
@@ -172,11 +177,33 @@
 
 @media (max-width: 1023px) {
   .interests__periods {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .season-card {
     min-height: 138px;
+  }
+}
+
+@media (min-width: 768px) {
+  .interests__periods {
+    gap: clamp(14px, 1.5vw, 22px);
+    max-width: 1180px;
+  }
+
+  .season-card {
+    grid-template-rows: 98px minmax(98px, 1fr) auto;
+    min-height: 265px;
+    padding: 22px 18px;
+  }
+
+  .season-card__media {
+    height: 98px;
+  }
+
+  .season-card__media img {
+    height: 94px;
+    width: 94px;
   }
 }
 
@@ -200,19 +227,22 @@
 
   .interests__periods {
     gap: 10px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
   }
 
   .season-card {
     align-items: center;
     gap: 8px;
-    grid-template-columns: 48px minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 48px minmax(0, 1fr) auto;
+    max-width: 300px;
     padding: 12px;
+    width: 100%;
   }
 
   .season-card__media {
-    grid-row: 1 / span 2;
+    grid-row: 1;
     height: 48px;
   }
 
@@ -222,7 +252,9 @@
   }
 
   .season-card__copy {
+    justify-items: center;
     min-height: 48px;
+    text-align: center;
   }
 
   .season-card h2 {
@@ -236,8 +268,8 @@
 
   .season-card__weight {
     font-size: 11px;
-    grid-column: 1 / -1;
-    justify-self: stretch;
+    grid-column: 1;
+    justify-self: center;
     padding: 7px 8px;
   }
 }
@@ -247,4 +279,3 @@
     animation: none;
   }
 }
-

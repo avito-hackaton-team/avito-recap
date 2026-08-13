@@ -363,7 +363,7 @@
 
 .category-recommendation-stamp {
   align-self: center;
-  background: var(--recap-coral);
+  background: var(--recap-violet);
   border-radius: 28px 56px 32px 48px;
   box-shadow: 0 16px 36px rgb(255 97 99 / 18%);
   color: #fff;

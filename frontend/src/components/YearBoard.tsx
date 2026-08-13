@@ -42,7 +42,6 @@ const MONTHS_FULL = [
 
 export function YearBoard({ days, peak }: YearBoardProps) {
   const [selected, setSelected] = useState<number | null>(null);
-  const [hovered, setHovered] = useState<number | null>(null);
 
   const rows = useMemo(() => buildYearRows(days, peak ?? null), [days, peak]);
 
@@ -50,7 +49,7 @@ export function YearBoard({ days, peak }: YearBoardProps) {
     return null;
   }
 
-  const highlighted = hovered ?? selected;
+  const highlighted = selected;
   const highlightedRow = highlighted === null ? null : (rows[highlighted] ?? null);
   const caption = highlightedRow ? monthCaption(highlightedRow) : peakCaption(peak ?? null);
 
@@ -73,12 +72,6 @@ export function YearBoard({ days, peak }: YearBoardProps) {
                   onClick={() =>
                     setSelected((current) => (current === row.month ? null : row.month))
                   }
-                  onPointerEnter={() => setHovered(row.month)}
-                  onPointerLeave={() =>
-                    setHovered((current) => (current === row.month ? null : current))
-                  }
-                  onFocus={() => setHovered(row.month)}
-                  onBlur={() => setHovered((current) => (current === row.month ? null : current))}
                 >
                   <span className="year-board__label" aria-hidden="true">
                     {MONTHS_SHORT[row.month]}
@@ -110,7 +103,7 @@ export function YearBoard({ days, peak }: YearBoardProps) {
       </div>
 
       <div className="year-board__legend">
-        <span className="year-board__legend-title">Действий за период месяца</span>
+        <span className="year-board__legend-title">Действий за неделю</span>
 
         <span className="year-board__legend-scale">
           <span className="year-board__legend-bound">реже</span>

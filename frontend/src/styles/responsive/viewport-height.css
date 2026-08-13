@@ -107,8 +107,9 @@
   }
 
   .season-card {
-    grid-template-rows: 64px minmax(96px, 1fr) auto;
-    padding: 16px;
+    grid-template-rows: 82px minmax(90px, 1fr) auto;
+    min-height: 224px;
+    padding: 18px 16px;
   }
 
   .story--category .listing-card--compact {
@@ -166,8 +167,9 @@
 
   .season-card {
     gap: 10px;
-    grid-template-rows: 56px minmax(88px, 1fr) auto;
-    padding: 14px;
+    grid-template-rows: 72px minmax(82px, 1fr) auto;
+    min-height: 205px;
+    padding: 16px 14px;
   }
 
   .story--category .listing-card--compact {
@@ -288,4 +290,3 @@
     max-height: 40dvh;
   }
 }
-
