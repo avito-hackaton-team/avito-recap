@@ -605,6 +605,10 @@
 }
 
 @media (min-width: 1024px) {
+  .year-board__plate {
+    box-shadow: none;
+  }
+
   .intro__cover {
     box-shadow: none;
   }
