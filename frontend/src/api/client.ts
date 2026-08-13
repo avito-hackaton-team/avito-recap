@@ -11,6 +11,19 @@ import type {
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '/api/v1';
 
+export const avitoHomeRedirectUrl = `${BASE_URL}/actions/open_home`;
+
+export function recommendationRedirectUrl(recapId: string, listingId: string): string {
+  return `${BASE_URL}/recaps/${encodeURIComponent(recapId)}/recommendations/${encodeURIComponent(listingId)}/similar`;
+}
+
+export function recapActionRedirectUrl(
+  recapId: string,
+  action: 'open_category' | 'open_favorites' | 'create_listing',
+): string {
+  return `${BASE_URL}/recaps/${encodeURIComponent(recapId)}/actions/${encodeURIComponent(action)}`;
+}
+
 /**
  * ApiError несёт `code` контракта — по нему выбирается текст для пользователя.
  * Серверный `message` остаётся в консоли: он написан для логов, не для UI.

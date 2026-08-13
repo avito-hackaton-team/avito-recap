@@ -21,11 +21,6 @@ export interface ProfileList {
   items: Profile[];
 }
 
-export interface CreateRecapRequest {
-  profileId: Uuid;
-  year: number;
-}
-
 export interface CreateRecapResponse {
   id: Uuid;
 }
@@ -109,6 +104,13 @@ export interface StatTile {
   label: string;
 }
 
+/** День с активностью. Дни без действий бэкенд не присылает. */
+export interface DayActivity {
+  /** ISO-дата, `2026-03-14`. */
+  date: string;
+  actions: number;
+}
+
 interface SlideBase {
   title: string;
   subtitle?: string;
@@ -117,7 +119,12 @@ interface SlideBase {
 
 export type Slide =
   | (SlideBase & { type: 'intro'; year: number })
-  | (SlideBase & { type: 'active_days'; activeDays: number })
+  | (SlideBase & {
+      type: 'active_days';
+      activeDays: number;
+      days?: DayActivity[];
+      peak?: DayActivity | null;
+    })
   | (SlideBase & { type: 'views'; views: number })
   | (SlideBase & {
       type: 'favorites';
@@ -130,6 +137,7 @@ export type Slide =
       category: CategoryRef;
       subcategory?: CategoryRef | null;
       share?: number;
+      quizOptions?: CategoryRef[];
       recommendations?: ListingRef[];
     })
   | (SlideBase & { type: 'purchases'; purchases: number; badge?: Badge | null })
@@ -143,8 +151,6 @@ export type Slide =
   | (SlideBase & { type: 'interests'; periods: PeriodInterest[]; shiftSummary?: string })
   | (SlideBase & { type: 'archetype'; archetype: Archetype })
   | (SlideBase & { type: 'final'; stats?: StatTile[]; actions?: Cta[] });
-
-export type SlideType = Slide['type'];
 
 export interface Recap {
   id: Uuid;

@@ -1,0 +1,96 @@
+/* Public loading and invalid-link states; the ready screen owns a CSS Module. */
+.public-loading {
+  align-items: center;
+  background:
+    radial-gradient(circle at 78% 20%, rgb(161 105 247 / 18%), transparent 32%), var(--recap-canvas);
+  border: 1px solid var(--recap-line);
+  border-radius: 28px;
+  color: var(--recap-ink);
+  color-scheme: light;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100dvh - 48px);
+  padding: 32px;
+}
+
+.public-loading__content {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  max-width: 520px;
+  text-align: center;
+}
+
+.public-loading__content h1 {
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  margin: 10px 0 0;
+}
+
+.public-loading__content p {
+  color: var(--recap-ink-secondary);
+  font-size: 18px;
+  margin: 0;
+}
+
+.public-loading__failure-mark {
+  align-items: center;
+  background: var(--recap-coral);
+  border-radius: 999px;
+  color: var(--recap-ink);
+  display: inline-flex;
+  font-size: 28px;
+  font-weight: 900;
+  height: 64px;
+  justify-content: center;
+  width: 64px;
+}
+
+.public-loading__action {
+  align-items: center;
+  background: var(--recap-violet);
+  border-radius: 15px;
+  color: var(--recap-ink);
+  display: inline-flex;
+  font-weight: 800;
+  justify-content: center;
+  margin-top: 8px;
+  min-height: 52px;
+  padding: 12px 24px;
+  text-decoration: none;
+}
+
+@media (max-width: 639px) {
+  #root:has(> .public-loading) {
+    padding: 0;
+  }
+
+  .public-loading {
+    border-radius: 0;
+    min-height: 100dvh;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--recap-blue);
+  outline-offset: 3px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--recap-ink);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  margin: 0 auto;
+  max-width: 1480px;
+  padding: 24px;
+}

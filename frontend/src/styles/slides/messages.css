@@ -1,0 +1,140 @@
+/* Диалоги года: метрика и основной 3D-ассет. */
+.story--messages {
+  background:
+    radial-gradient(circle at 86% 28%, rgb(0 170 255 / 22%), transparent 34%),
+    radial-gradient(circle at 72% 88%, rgb(255 97 99 / 12%), transparent 26%), #f2f2f4;
+}
+
+.slide--messages {
+  animation: messages-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  gap: 64px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+}
+
+.messages__copy {
+  gap: 24px;
+  max-width: 520px;
+}
+
+.messages__act {
+  align-items: center;
+  background: var(--recap-blue);
+  border-radius: 999px;
+  color: var(--recap-ink);
+  display: inline-flex;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+  min-height: 44px;
+  padding: 9px 18px;
+}
+
+.messages__metric {
+  display: grid;
+  gap: 4px;
+}
+
+.messages__metric strong {
+  color: var(--recap-blue);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(104px, 11vw, 164px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 0.82;
+  white-space: nowrap;
+}
+
+.messages__metric h1 {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(32px, 3vw, 44px);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.messages__note {
+  color: var(--recap-ink-secondary);
+  font-size: clamp(21px, 1.8vw, 24px);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 40ch;
+}
+
+.messages__visual {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 440px;
+}
+
+.messages__art {
+  display: block;
+  max-width: 500px;
+  width: 100%;
+}
+
+@keyframes messages-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .slide--messages {
+    align-content: center;
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+
+  .messages__visual {
+    justify-self: center;
+    min-height: 240px;
+    width: min(100%, 420px);
+  }
+
+  .messages__art {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 639px) {
+  .slide--messages {
+    align-content: start;
+    gap: 24px;
+  }
+
+  .messages__copy {
+    gap: 16px;
+  }
+
+  .messages__metric strong {
+    font-size: clamp(72px, 24vw, 104px);
+  }
+
+  .messages__metric h1 {
+    font-size: 32px;
+  }
+
+  .messages__note {
+    font-size: 20px;
+  }
+
+  .messages__visual {
+    min-height: 210px;
+    width: 100%;
+  }
+
+  .messages__art {
+    max-width: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide--messages {
+    animation: none;
+  }
+}
+

@@ -1,0 +1,17 @@
+:root {
+  --bg: #f5f5f7;
+  --radius: 24px;
+  --recap-canvas: #f2f2f4;
+  --recap-surface: #ffffff;
+  --recap-surface-subtle: #f7f7f8;
+  --recap-ink: #0f0f14;
+  --recap-ink-secondary: #5c5c66;
+  --recap-line: #e3e3e8;
+  --recap-blue: #00aaff;
+  --recap-coral: #ff6163;
+  --recap-green: #97cf26;
+  --recap-violet: #a169f7;
+  --recap-focus: #0067d8;
+
+  color-scheme: light;
+}

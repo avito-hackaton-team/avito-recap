@@ -1,12 +1,26 @@
 package activity
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type rowScanner interface {
 	Scan(dest ...any) error
+}
+
+type dailyActivityModel struct {
+	Day     time.Time
+	Actions int64
+}
+
+func (m *dailyActivityModel) Scan(row rowScanner) error {
+	return row.Scan(
+		&m.Day,
+		&m.Actions,
+	)
 }
 
 type categoryActivityModel struct {

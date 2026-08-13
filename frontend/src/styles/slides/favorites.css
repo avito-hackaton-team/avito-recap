@@ -1,0 +1,297 @@
+/* Избранное: конкретная старая находка либо нейтральная обложка альбома. */
+.story--favorites {
+  background:
+    radial-gradient(circle at 84% 28%, rgb(255 97 99 / 22%), transparent 36%),
+    radial-gradient(circle at 12% 88%, rgb(0 170 255 / 12%), transparent 28%), #f2f2f4;
+}
+
+.slide--favorites {
+  animation: favorites-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  gap: 64px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+}
+
+.slide--favorites-featured {
+  align-items: center;
+  gap: 64px;
+  grid-template-columns: minmax(340px, 1fr) minmax(400px, 440px);
+}
+
+.favorites__copy {
+  gap: 24px;
+  max-width: 480px;
+}
+
+.favorites__act,
+.favorites__feature-label {
+  align-items: center;
+  background: var(--recap-coral);
+  border-radius: 999px;
+  color: var(--recap-ink);
+  display: inline-flex;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+  min-height: 44px;
+  padding: 9px 18px;
+}
+
+.favorites__act {
+  background: var(--recap-blue);
+}
+
+.favorites__feature-label {
+  justify-self: start;
+}
+
+.favorites__count {
+  display: grid;
+  gap: 8px;
+}
+
+.favorites__count strong {
+  color: var(--recap-blue);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(104px, 11vw, 152px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 0.84;
+}
+
+.favorites__count h1 {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(30px, 3vw, 40px);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.favorites__count p {
+  color: var(--recap-ink);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(30px, 3vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.favorites__feature {
+  align-content: start;
+  display: grid;
+  gap: 24px;
+  justify-self: end;
+  max-width: 440px;
+  width: 100%;
+}
+
+.favorites__headline {
+  font-size: clamp(21px, 1.8vw, 24px);
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.favorites__availability {
+  background: rgb(151 207 38 / 22%);
+  border-radius: 999px;
+  color: #355600;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  padding: 10px 16px;
+}
+
+.favorites__visual {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 440px;
+}
+
+.favorites__art {
+  display: block;
+  max-width: 490px;
+  width: 100%;
+}
+
+.story--favorites .listing-card--feature {
+  background: var(--recap-surface);
+  border: 1px solid var(--recap-line);
+  box-shadow: 0 16px 40px rgb(15 15 20 / 10%);
+  color: var(--recap-ink);
+  cursor: default;
+  gap: 16px;
+  max-width: 440px;
+  padding: 24px;
+  width: 100%;
+}
+
+.story--favorites .listing-card--feature .listing-card__caption {
+  color: #b4232b;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.story--favorites .listing-card--feature .listing-card__image {
+  background: var(--recap-surface-subtle);
+  height: 180px;
+}
+
+.story--favorites .listing-card--feature .listing-card__title {
+  color: var(--recap-ink);
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.story--favorites .listing-card--feature .listing-card__price {
+  color: var(--recap-ink);
+  font-size: 24px;
+}
+
+.story--favorites .listing-card--feature .listing-card__note {
+  color: var(--recap-ink-secondary);
+  font-size: 15px;
+}
+
+.listing-card__image-fallback {
+  align-items: center;
+  background:
+    radial-gradient(circle at 18% 20%, rgb(0 170 255 / 28%), transparent 28%),
+    radial-gradient(circle at 82% 78%, rgb(255 97 99 / 24%), transparent 30%), #f0ecff;
+  color: var(--recap-ink);
+  display: grid;
+  gap: 2px;
+  height: 100%;
+  justify-items: center;
+  place-content: center;
+  width: 100%;
+}
+
+.listing-card__image .listing-card__image-monogram {
+  color: var(--recap-ink);
+  font-size: clamp(32px, 4vw, 58px);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.listing-card__image-fallback small {
+  color: var(--recap-ink-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes favorites-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .slide--favorites {
+    align-content: center;
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+
+  .slide--favorites-featured {
+    grid-template-columns: 1fr;
+  }
+
+  .favorites__copy {
+    max-width: 620px;
+  }
+
+  .favorites__visual {
+    justify-self: center;
+    min-height: 280px;
+    width: min(100%, 440px);
+  }
+
+  .favorites__art {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 639px) {
+  .slide--favorites {
+    align-content: start;
+    gap: 16px;
+  }
+
+  .favorites__copy {
+    gap: 16px;
+  }
+
+  .favorites__count strong {
+    font-size: clamp(72px, 24vw, 104px);
+  }
+
+  .favorites__count h1 {
+    font-size: 30px;
+  }
+
+  .favorites__count p {
+    font-size: 30px;
+  }
+
+  .favorites__feature {
+    gap: 14px;
+    min-height: 0;
+  }
+
+  .favorites__visual {
+    min-height: 240px;
+    width: 100%;
+  }
+
+  .favorites__art {
+    max-width: 240px;
+  }
+
+  .story--favorites .listing-card--feature {
+    display: grid;
+    gap: 8px 14px;
+    grid-template-columns: 112px minmax(0, 1fr);
+    padding: 18px;
+  }
+
+  .story--favorites .listing-card--feature .listing-card__caption {
+    grid-column: 1 / -1;
+  }
+
+  .story--favorites .listing-card--feature .listing-card__image {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+    height: 128px;
+  }
+
+  .story--favorites .listing-card--feature .listing-card__title,
+  .story--favorites .listing-card--feature .listing-card__price,
+  .story--favorites .listing-card--feature .listing-card__note {
+    grid-column: 2;
+    margin: 0;
+  }
+
+  .story--favorites .listing-card--feature .listing-card__title {
+    align-self: end;
+    font-size: 21px;
+  }
+
+  .story--favorites .listing-card--feature .listing-card__caption {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide--favorites {
+    animation: none;
+  }
+}
+

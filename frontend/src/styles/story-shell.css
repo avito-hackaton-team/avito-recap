@@ -1,0 +1,119 @@
+/* История */
+.story {
+  display: grid;
+  gap: 28px;
+  grid-template-rows: auto 1fr auto;
+  padding: 28px 48px 36px;
+}
+
+.story__top {
+  align-items: center;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+}
+
+.story__back,
+.story__circle {
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 18px;
+}
+
+.story__circle {
+  height: 56px;
+  width: 56px;
+}
+
+.story__circle:disabled {
+  opacity: 0.35;
+}
+
+.story__progress {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.story__segment {
+  border-radius: 999px;
+  flex: 1;
+  height: 5px;
+}
+
+.story__counter {
+  font-size: 15px;
+}
+
+.story__bottom {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.story__content {
+  display: grid;
+  min-width: 0;
+  scrollbar-width: thin;
+}
+
+.story__content:focus {
+  outline: none;
+}
+
+.story__content > .slide {
+  height: 100%;
+}
+
+/* Слайд */
+.slide {
+  align-items: center;
+  display: grid;
+  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+}
+
+/* Светлая оболочка для переработанных кадров истории. */
+.story--light {
+  border: 1px solid var(--recap-line);
+  color: var(--recap-ink);
+  color-scheme: light;
+  min-height: calc(100dvh - 48px);
+}
+
+.story--light .story__back,
+.story--light .story__circle {
+  background: var(--recap-surface-subtle);
+  color: var(--recap-ink);
+}
+
+.story--light .story__back {
+  --button-glow: rgb(151 207 38 / 28%);
+
+  background: var(--recap-green);
+  font-weight: 700;
+  min-height: 44px;
+}
+
+.story--light .story__segment {
+  background: var(--recap-line);
+}
+
+.story--light .story__segment--done {
+  background: var(--recap-blue);
+}
+
+.story--light .story__counter {
+  color: var(--recap-ink-secondary);
+}
+
+.story--light .button--light {
+  --button-glow: rgb(0 170 255 / 30%);
+
+  background: var(--recap-blue);
+  color: var(--recap-ink);
+}
