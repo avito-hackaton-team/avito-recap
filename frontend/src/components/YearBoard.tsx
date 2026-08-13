@@ -103,7 +103,7 @@ export function YearBoard({ days, peak }: YearBoardProps) {
       </div>
 
       <div className="year-board__legend">
-        <span className="year-board__legend-title">Действий за период месяца</span>
+        <span className="year-board__legend-title">Действий за неделю</span>
 
         <span className="year-board__legend-scale">
           <span className="year-board__legend-bound">реже</span>
