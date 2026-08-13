@@ -244,22 +244,35 @@
 
 .recap-state__concept-action,
 .recap-state__primary {
+  --button-glow: rgb(161 105 247 / 30%);
+
   background: var(--recap-violet);
   color: var(--recap-ink);
+  text-decoration: none;
   width: 100%;
 }
 
 .recap-state__secondary {
   background: transparent;
   border: 0;
-  color: var(--recap-ink-secondary);
+  color: #6535ad;
   cursor: pointer;
   font: inherit;
+  font-weight: 600;
   justify-self: center;
   min-height: 44px;
   padding: 8px;
   text-decoration: underline;
   text-underline-offset: 4px;
+  transition: none;
+}
+
+.recap-state__secondary:hover,
+.recap-state__secondary:active {
+  box-shadow: none;
+  color: #4f258f;
+  filter: none;
+  transform: none;
 }
 
 .recap-state__primary:focus-visible,

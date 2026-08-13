@@ -130,6 +130,8 @@
 }
 
 .button--start {
+  --button-glow: rgb(0 170 255 / 30%);
+
   background: var(--recap-blue);
   color: var(--recap-ink);
   font-size: 19px;
@@ -138,9 +140,7 @@
   padding: 16px 24px;
 }
 
-.start__wordmark:focus-visible,
-.profile-selection__state button:focus-visible,
-.button--start:focus-visible {
+.start__wordmark:focus-visible {
   outline: 3px solid var(--recap-focus);
   outline-offset: 2px;
 }

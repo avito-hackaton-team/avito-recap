@@ -151,11 +151,7 @@ export function StoryScreen({ recap, profile, onExit }: StoryScreenProps) {
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (
-      !event.isPrimary ||
-      event.button !== 0 ||
-      isInteractiveTarget(event.target)
-    ) {
+    if (!event.isPrimary || event.button !== 0 || isInteractiveTarget(event.target)) {
       gestureStartRef.current = null;
       return;
     }
@@ -188,11 +184,7 @@ export function StoryScreen({ recap, profile, onExit }: StoryScreenProps) {
       return;
     }
 
-    if (
-      window.innerWidth > 767 ||
-      horizontalDistance > 10 ||
-      Math.abs(deltaY) > 10
-    ) {
+    if (window.innerWidth > 767 || horizontalDistance > 10 || Math.abs(deltaY) > 10) {
       return;
     }
 
@@ -308,6 +300,7 @@ export function StoryScreen({ recap, profile, onExit }: StoryScreenProps) {
       >
         <SlideView
           slide={slide}
+          recapId={recap.id}
           profileName={profile.name}
           onShare={() => void share()}
           shareDisabled={shareState.status === 'loading'}

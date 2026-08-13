@@ -92,6 +92,8 @@
 }
 
 .story--light .story__back {
+  --button-glow: rgb(151 207 38 / 28%);
+
   background: var(--recap-green);
   font-weight: 700;
   min-height: 44px;
@@ -110,6 +112,8 @@
 }
 
 .story--light .button--light {
+  --button-glow: rgb(0 170 255 / 30%);
+
   background: var(--recap-blue);
   color: var(--recap-ink);
 }

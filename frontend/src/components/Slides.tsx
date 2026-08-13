@@ -1,14 +1,8 @@
 import { YearBoard } from './YearBoard';
 import { FinalRecapSlide } from './FinalRecapSlide';
+import { recommendationRedirectUrl, recapActionRedirectUrl } from '../api/client';
 import { formatRecommendationFindingCount } from '../lib/recapLogic';
-import type {
-  Archetype,
-  Badge,
-  ListingRef,
-  PeriodInterest,
-  Season,
-  Slide,
-} from '../api/types';
+import type { Archetype, Badge, ListingRef, PeriodInterest, Season, Slide } from '../api/types';
 
 const SEASON_TITLES: Record<Season, string> = {
   winter: 'Зимой',
@@ -40,6 +34,7 @@ function formatPrice(price?: number | null): string {
 
 export function SlideView({
   slide,
+  recapId,
   profileName,
   onShare,
   shareDisabled = false,
@@ -56,6 +51,7 @@ export function SlideView({
   interestSummary,
 }: {
   slide: Slide;
+  recapId: string;
   profileName: string;
   onShare: () => void;
   shareDisabled?: boolean;
@@ -192,11 +188,7 @@ export function SlideView({
               <h1 className="favorites__feature-label" id="favorites-title">
                 ГЛАВНАЯ НАХОДКА
               </h1>
-              <ListingCard
-                listing={slide.oldestFavorite}
-                caption="Дольше всего в избранном"
-                variant="feature"
-              />
+              <ListingCard listing={slide.oldestFavorite} caption="Дольше всего в избранном" />
             </div>
           ) : (
             <div className="favorites__visual" aria-hidden="true">
@@ -361,6 +353,15 @@ export function SlideView({
                 </div>
               </div>
             ) : null}
+
+            {!hasRecommendations && slide.cta?.action === 'open_category' ? (
+              <a
+                className="button category__cta"
+                href={recapActionRedirectUrl(recapId, 'open_category')}
+              >
+                {slide.cta.title}
+              </a>
+            ) : null}
           </div>
 
           {hasRecommendations ? (
@@ -375,7 +376,11 @@ export function SlideView({
               <div className="category__recommendations">
                 <div className="category__recommendation-list">
                   {recommendations.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} variant="compact" />
+                    <RecommendationCard
+                      key={listing.id}
+                      listing={listing}
+                      href={recommendationRedirectUrl(recapId, listing.id)}
+                    />
                   ))}
                 </div>
               </div>
@@ -449,6 +454,7 @@ export function SlideView({
       return (
         <FinalRecapSlide
           slide={slide}
+          recapId={recapId}
           year={recapYear}
           archetype={recapArchetype}
           favoriteCategory={favoriteCategorySlide}
@@ -554,19 +560,11 @@ function SeasonCard({ period }: { period: PeriodInterest }) {
   );
 }
 
-function ListingCard({
-  listing,
-  caption,
-  variant,
-}: {
-  listing: ListingRef;
-  caption?: string;
-  variant: 'feature' | 'compact';
-}) {
+function ListingCard({ listing, caption }: { listing: ListingRef; caption?: string }) {
   const addedAt = formatListingDate(listing.addedAt);
 
   return (
-    <article className={`listing-card listing-card--${variant}`}>
+    <article className="listing-card listing-card--feature">
       {caption ? <p className="listing-card__caption">{caption}</p> : null}
       <div className="listing-card__image">
         {listing.imageUrl ? (
@@ -575,20 +573,29 @@ function ListingCard({
           <ListingImageFallback title={listing.title} />
         )}
       </div>
-      {variant === 'compact' ? (
-        <div className="listing-card__content">
-          <p className="listing-card__title">{listing.title}</p>
-          <p className="listing-card__price">{formatPrice(listing.price)}</p>
-          <p className="listing-card__action">Посмотреть объявление →</p>
-        </div>
-      ) : (
-        <>
-          <p className="listing-card__title">{listing.title}</p>
-          <p className="listing-card__price">{formatPrice(listing.price)}</p>
-          {addedAt ? <p className="listing-card__note">В избранном с {addedAt}</p> : null}
-        </>
-      )}
+      <p className="listing-card__title">{listing.title}</p>
+      <p className="listing-card__price">{formatPrice(listing.price)}</p>
+      {addedAt ? <p className="listing-card__note">В избранном с {addedAt}</p> : null}
     </article>
+  );
+}
+
+function RecommendationCard({ listing, href }: { listing: ListingRef; href: string }) {
+  return (
+    <a className="listing-card listing-card--compact" href={href}>
+      <div className="listing-card__image">
+        {listing.imageUrl ? (
+          <img src={listing.imageUrl} alt={listing.title} />
+        ) : (
+          <ListingImageFallback title={listing.title} />
+        )}
+      </div>
+      <div className="listing-card__content">
+        <p className="listing-card__title">{listing.title}</p>
+        <p className="listing-card__price">{formatPrice(listing.price)}</p>
+        <p className="listing-card__action">Посмотреть похожие</p>
+      </div>
+    </a>
   );
 }
 

@@ -493,6 +493,10 @@ func buildArchetypeSlide(input slideInput) (any, bool) {
 func buildFinalSlide(input slideInput) (any, bool) {
 	actions := []cta{{Action: ctaShareRecap, Title: "Поделиться итогами"}}
 
+	if input.archetype.UserArchetype == entity.ArchetypeDealmaker {
+		actions = append(actions, cta{Action: ctaCreateListing, Title: "Разместить объявление"})
+	}
+
 	if len(input.categories) > 0 {
 		favorite := input.categories[0]
 		actions = append(actions, cta{
