@@ -7,6 +7,11 @@
   width: min(100%, 360px);
 }
 
+a.listing-card {
+  color: inherit;
+  text-decoration: none;
+}
+
 .listing-card--compact {
   padding: 14px;
 }

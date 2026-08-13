@@ -10,6 +10,10 @@
   background: var(--recap-violet);
 }
 
+.story--archetype .button--light {
+  --button-glow: rgb(161 105 247 / 30%);
+}
+
 .slide--archetype {
   animation: archetype-enter 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   gap: 64px;
@@ -200,4 +204,3 @@
     animation: none;
   }
 }
-

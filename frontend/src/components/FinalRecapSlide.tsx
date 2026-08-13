@@ -1,4 +1,5 @@
 import type { Archetype, ArchetypeCode, Cta, Slide } from '../api/types';
+import { recapActionRedirectUrl } from '../api/client';
 import styles from './FinalRecapSlide.module.css';
 
 type FinalSlide = Extract<Slide, { type: 'final' }>;
@@ -27,15 +28,17 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat('ru-RU').format(value);
 }
 
-function selectPrimaryAction(
-  actions: Cta[] | undefined,
-  archetype: ArchetypeCode,
-): Cta | undefined {
+function selectProductActions(actions: Cta[] | undefined, archetype: ArchetypeCode): Cta[] {
   if (!actions?.length) {
-    return undefined;
+    return [];
   }
 
-  const productActions = actions.filter((action) => action.action !== 'share_recap');
+  const productActions = actions.filter(
+    (action) =>
+      action.action === 'open_category' ||
+      action.action === 'open_favorites' ||
+      action.action === 'create_listing',
+  );
   const preferredAction: Partial<Record<ArchetypeCode, Cta['action']>> = {
     collector: 'open_favorites',
     dealmaker: 'create_listing',
@@ -43,14 +46,17 @@ function selectPrimaryAction(
     negotiator: 'open_category',
   };
 
-  return (
-    productActions.find((action) => action.action === preferredAction[archetype]) ??
-    productActions[0]
-  );
+  const primary = productActions.find((action) => action.action === preferredAction[archetype]);
+  const ordered = primary
+    ? [primary, ...productActions.filter((action) => action !== primary)]
+    : productActions;
+
+  return ordered.slice(0, 2);
 }
 
 interface FinalRecapSlideProps {
   slide: FinalSlide;
+  recapId: string;
   year: number;
   archetype: Archetype;
   favoriteCategory?: FavoriteCategorySlide;
@@ -65,6 +71,7 @@ interface FinalRecapSlideProps {
 
 export function FinalRecapSlide({
   slide,
+  recapId,
   year,
   archetype,
   favoriteCategory,
@@ -76,7 +83,7 @@ export function FinalRecapSlide({
   shareUrl,
   onExit,
 }: FinalRecapSlideProps) {
-  const primaryAction = selectPrimaryAction(slide.actions, archetype.code);
+  const productActions = selectProductActions(slide.actions, archetype.code);
   const shareAction = slide.actions?.find((action) => action.action === 'share_recap');
 
   return (
@@ -104,19 +111,31 @@ export function FinalRecapSlide({
           ) : null}
 
           <div className={styles.actions}>
-            {shareAction ? (
-              <button type="button" onClick={onShare} disabled={shareDisabled}>
-                {shareLabel ?? 'Поделиться итогами ↗'}
-              </button>
-            ) : null}
+            <div className={styles.actionButtons}>
+              {shareAction ? (
+                <button type="button" onClick={onShare} disabled={shareDisabled}>
+                  {shareLabel ?? 'Поделиться итогами ↗'}
+                </button>
+              ) : null}
 
-            {primaryAction ? (
-              primaryAction.url ? (
-                <a href={primaryAction.url}>{primaryAction.title}</a>
-              ) : (
-                <span role="note">{primaryAction.title}</span>
-              )
-            ) : null}
+              {productActions.map((action, actionIndex) =>
+                action.action === 'open_category' ||
+                action.action === 'open_favorites' ||
+                action.action === 'create_listing' ? (
+                  <a
+                    key={action.action}
+                    className={
+                      actionIndex === 0
+                        ? styles.productAction
+                        : styles.secondaryProductAction
+                    }
+                    href={recapActionRedirectUrl(recapId, action.action)}
+                  >
+                    {action.title}
+                  </a>
+                ) : null,
+              )}
+            </div>
 
             <button type="button" className={styles.exit} onClick={onExit}>
               Другой профиль
@@ -142,15 +161,13 @@ export function FinalRecapSlide({
         <aside className={styles.visualPanel} aria-label="Архетип и главный интерес года">
           <div className={styles.visualHeading}>
             <span>АРХЕТИП ГОДА</span>
-            <strong aria-hidden="true">{archetype.title.charAt(0).toLocaleUpperCase('ru-RU')}</strong>
+            <strong aria-hidden="true">
+              {archetype.title.charAt(0).toLocaleUpperCase('ru-RU')}
+            </strong>
           </div>
 
           <figure className={styles.archetypeVisual}>
-            <img
-              src={artUrl(`archetype-${archetype.code}`)}
-              alt=""
-              aria-hidden="true"
-            />
+            <img src={artUrl(`archetype-${archetype.code}`)} alt="" aria-hidden="true" />
             <figcaption>
               <span>Ваш архетип</span>
               <strong>{archetype.title}</strong>

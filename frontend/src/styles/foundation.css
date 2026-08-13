@@ -17,9 +17,16 @@
   gap: 10px;
   justify-content: center;
   padding: 16px 28px;
+}
+
+:where(button, a.button) {
+  --button-glow: rgb(15 15 20 / 16%);
+
   transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
+    box-shadow 150ms ease,
+    filter 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
 }
 
 .button:disabled {
@@ -27,7 +34,18 @@
   opacity: 0.45;
 }
 
-.button:not(:disabled):hover {
+:where(button:not(:disabled), a.button):hover {
+  box-shadow: 0 10px 24px var(--button-glow);
+  filter: saturate(1.06);
   transform: translateY(-1px);
 }
 
+:where(button:not(:disabled), a.button):active {
+  box-shadow: 0 5px 14px var(--button-glow);
+  transform: translateY(1px);
+}
+
+:where(button, a.button):focus-visible {
+  outline: 3px solid var(--recap-focus);
+  outline-offset: 3px;
+}
