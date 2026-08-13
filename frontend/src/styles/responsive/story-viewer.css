@@ -462,24 +462,66 @@
     font-size: clamp(27px, 8vw, 32px);
   }
 
+  /* Слот визуала на телефоне фиксирован по высоте, но доска — не картинка:
+     её проекция не ужимается под произвольный слот, и плиту срезало сверху.
+     Здесь высоту задаёт сама доска, а копия слайда уходит ниже. */
+  .active-days__visual {
+    flex: 0 0 auto;
+  }
+
   .year-board {
     --cell: 10px;
     --column-gap: 6px;
-    --row-gap: 9px;
+    --row-gap: 8px;
     --base: 4px;
     --step: 4px;
-    --scene: min(250px, calc(100vw - 48px));
+    --scene: min(232px, calc(100vw - 48px));
+    --plate-lift: 0px;
 
-    gap: 4px;
+    gap: 8px;
   }
 
+  /* Поле слева заметно шире прочих: подпись месяца развёрнута к камере и
+     свешивается влево от своей строки, а при узком поле уезжала за край плиты. */
   .year-board__plate {
-    padding: 11px 13px 13px 17px;
+    padding: 10px 12px 12px 26px;
   }
 
-  .year-board__legend,
+  .year-board__row {
+    gap: 8px;
+  }
+
+  .year-board__label {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    padding: 0 4px;
+  }
+
+  /* Легенда и подпись остаются: строки доски кликабельны, и без подписи тап по
+     месяцу ни на что не отвечает. */
+  .year-board__legend {
+    column-gap: 6px;
+    font-size: 10px;
+    row-gap: 4px;
+  }
+
+  .year-board__legend-cell {
+    height: 9px;
+    width: 9px;
+  }
+
   .year-board__caption {
-    display: none;
+    border-radius: 14px;
+    min-height: 40px;
+    padding: 6px 12px;
+  }
+
+  .year-board__caption-title {
+    font-size: 14px;
+  }
+
+  .year-board__caption-text {
+    font-size: 12px;
   }
 
   .views__art,
