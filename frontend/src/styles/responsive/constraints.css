@@ -632,27 +632,93 @@
 }
 
 @media (max-width: 639px) and (max-height: 700px) and (orientation: portrait) {
+  /* Высоту задаёт сама доска: при фиксированном базисе её плита не помещается
+     в слот и обрезается сверху. */
   .active-days__visual {
-    flex-basis: 164px;
+    flex: 0 0 auto;
   }
 
   .year-board {
     --cell: 8px;
     --column-gap: 4px;
-    --row-gap: 6px;
+    --row-gap: 5px;
     --base: 3px;
     --step: 3px;
-    --scene: min(180px, calc(100vw - 72px));
+    --scene: min(172px, calc(100vw - 72px));
+    --plate-lift: 0px;
 
-    gap: 2px;
+    gap: 4px;
   }
 
   .year-board__plate {
-    padding: 8px 10px 10px 12px;
+    padding: 6px 8px 8px 18px;
+  }
+
+  .year-board__label {
+    font-size: 7px;
+    padding: 0 3px;
+  }
+
+  /* На низком экране остаётся только подпись: она отвечает на тап по месяцу,
+     легенда же дублирует то, что и так видно по цвету. */
+  .year-board__legend {
+    display: none;
+  }
+
+  .year-board__caption {
+    min-height: 34px;
+    padding: 5px 10px;
+  }
+
+  .year-board__caption-title {
+    font-size: 13px;
+  }
+
+  .year-board__caption-text {
+    font-size: 11px;
   }
 
   .favorites__feature {
     flex-basis: 202px;
+  }
+}
+
+/* Экраны вроде 320×568: доска ужимается до предела, но подпись остаётся —
+   без неё тап по месяцу ничего не отвечает, а это единственный интерактив
+   слайда. */
+@media (max-width: 639px) and (max-height: 600px) and (orientation: portrait) {
+  .year-board {
+    --cell: 6px;
+    --column-gap: 4px;
+    --row-gap: 4px;
+    --base: 3px;
+    --step: 2.5px;
+    --scene: min(132px, calc(100vw - 72px));
+
+    gap: 3px;
+  }
+
+  .year-board__plate {
+    padding: 6px 8px 8px;
+  }
+
+  /* Подписи месяцев на такой ширине вырождаются в нечитаемые плашки и лезут на
+     бруски. Месяц называет подпись под доской — она остаётся. */
+  .year-board__label {
+    display: none;
+  }
+
+  .year-board__caption {
+    min-height: 30px;
+    padding: 4px 8px;
+  }
+
+  .year-board__caption-title {
+    font-size: 12px;
+  }
+
+  .year-board__caption-text {
+    font-size: 10px;
   }
 }
 
