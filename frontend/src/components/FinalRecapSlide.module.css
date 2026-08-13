@@ -337,7 +337,7 @@
 }
 
 .archetypeVisual figcaption strong {
-  color: #ffffff;
+  color: #320757;
   font-size: clamp(25px, 2.2vw, 32px);
   font-weight: 800;
   letter-spacing: -0.035em;
@@ -480,6 +480,11 @@
 
   .archetypeVisual img {
     height: min(34vh, 270px);
+  }
+
+  .archetypeVisual figcaption {
+    margin-top: 2px;
+    transform: translateY(-18px);
   }
 }
 

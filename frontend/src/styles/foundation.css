@@ -34,13 +34,13 @@
   opacity: 0.45;
 }
 
-:where(button:not(:disabled), a.button):hover {
+:where(button:not(:disabled):not(.year-board__row), a.button):hover {
   box-shadow: 0 10px 24px var(--button-glow);
   filter: saturate(1.06);
   transform: translateY(-1px);
 }
 
-:where(button:not(:disabled), a.button):active {
+:where(button:not(:disabled):not(.year-board__row), a.button):active {
   box-shadow: 0 5px 14px var(--button-glow);
   transform: translateY(1px);
 }

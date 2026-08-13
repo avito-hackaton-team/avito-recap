@@ -42,19 +42,31 @@
   }
 
   .interests__periods {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .season-card {
     gap: 8px;
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 48px minmax(0, 1fr) auto;
     min-height: 132px;
     padding: 12px;
+    text-align: center;
   }
 
-  .season-card__media,
+  .season-card__media {
+    grid-row: 1;
+    height: 48px;
+  }
+
   .season-card__media img {
     height: 48px;
+    width: 48px;
+  }
+
+  .season-card__copy {
+    justify-items: center;
+    text-align: center;
   }
 
   .season-card h2 {
@@ -101,7 +113,26 @@
   }
 
   .interests__periods {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .season-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 48px minmax(0, 1fr) auto;
+    text-align: center;
+  }
+
+  .season-card__media {
+    grid-row: 1;
+  }
+
+  .season-card__copy {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .season-card__weight {
+    grid-column: 1;
   }
 }
 
@@ -169,14 +200,15 @@
 
   .season-card {
     gap: 4px 8px;
-    grid-template-columns: 46px minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 46px minmax(0, 1fr) auto;
     min-height: 94px;
     padding: 8px;
+    text-align: center;
   }
 
   .season-card__media {
-    grid-row: 1 / -1;
+    grid-row: 1;
     height: 46px;
   }
 
@@ -186,6 +218,8 @@
 
   .season-card__copy {
     gap: 2px;
+    justify-items: center;
+    text-align: center;
   }
 
   .season-card h2 {
@@ -388,12 +422,12 @@
 
 @media (min-width: 901px) {
   .interests__periods {
-    max-width: 960px;
+    max-width: 1180px;
   }
 
   .season-card {
-    grid-template-rows: minmax(68px, auto) auto;
-    min-height: 138px;
+    grid-template-rows: 98px minmax(98px, 1fr) auto;
+    min-height: 265px;
   }
 }
 
@@ -536,20 +570,20 @@
   }
 
   .season-card {
-    gap: 6px 14px;
-    grid-template-columns: 72px minmax(0, 1fr);
-    grid-template-rows: minmax(64px, auto) auto;
-    min-height: 140px;
-    padding: 14px 16px;
+    gap: 8px 14px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 82px minmax(78px, 1fr) auto;
+    min-height: 220px;
+    padding: 17px 16px;
   }
 
   .season-card__media {
-    height: 70px;
+    height: 82px;
   }
 
   .season-card__media img {
-    height: 66px;
-    width: 66px;
+    height: 78px;
+    width: 78px;
   }
 
   .season-card__copy {
@@ -837,8 +871,8 @@
 
   .season-card {
     gap: 3px 6px;
-    grid-template-columns: 36px minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 34px minmax(0, 1fr) auto;
     min-height: 104px;
     padding: 8px;
   }
@@ -851,6 +885,8 @@
 
   .season-card__copy {
     gap: 1px;
+    justify-items: center;
+    text-align: center;
   }
 
   .season-card__season,
@@ -881,5 +917,16 @@
 
   .story--favorites .listing-card--feature .listing-card__image {
     height: 92px;
+  }
+}
+
+@media (max-width: 639px) and (orientation: portrait) {
+  .slide--interests .interests__periods {
+    justify-items: center;
+  }
+
+  .slide--interests .season-card {
+    max-width: 300px;
+    width: min(100%, 300px);
   }
 }
