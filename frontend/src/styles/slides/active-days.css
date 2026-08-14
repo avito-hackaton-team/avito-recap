@@ -167,6 +167,16 @@
   transition: opacity 160ms ease;
 }
 
+/* Полоса попадания шире самой строки: между месяцами лежит зазор в --row-gap, и
+   на нём курсор не попадал ни на один месяц — почти половина площади доски была
+   мёртвой зоной, из-за чего наведение казалось неработающим. Половинки зазора
+   делятся между соседями встык, поэтому строки не перехватывают чужие события. */
+.year-board__row::after {
+  content: '';
+  inset: calc(-0.5 * var(--row-gap)) 0;
+  position: absolute;
+}
+
 .year-board__row:hover::before,
 .year-board__row:focus-visible::before,
 .year-board__row--active::before {

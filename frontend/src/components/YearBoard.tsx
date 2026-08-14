@@ -42,6 +42,7 @@ const MONTHS_FULL = [
 
 export function YearBoard({ days, peak }: YearBoardProps) {
   const [selected, setSelected] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<number | null>(null);
 
   const rows = useMemo(() => buildYearRows(days, peak ?? null), [days, peak]);
 
@@ -49,7 +50,7 @@ export function YearBoard({ days, peak }: YearBoardProps) {
     return null;
   }
 
-  const highlighted = selected;
+  const highlighted = hovered ?? selected;
   const highlightedRow = highlighted === null ? null : (rows[highlighted] ?? null);
   const caption = highlightedRow ? monthCaption(highlightedRow) : peakCaption(peak ?? null);
 
@@ -72,6 +73,18 @@ export function YearBoard({ days, peak }: YearBoardProps) {
                   onClick={() =>
                     setSelected((current) => (current === row.month ? null : row.month))
                   }
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== 'touch') {
+                      setHovered(row.month);
+                    }
+                  }}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType !== 'touch') {
+                      setHovered((current) => (current === row.month ? null : current));
+                    }
+                  }}
+                  onFocus={() => setHovered(row.month)}
+                  onBlur={() => setHovered((current) => (current === row.month ? null : current))}
                 >
                   <span className="year-board__label" aria-hidden="true">
                     {MONTHS_SHORT[row.month]}
