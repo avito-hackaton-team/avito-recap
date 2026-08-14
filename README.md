@@ -18,6 +18,10 @@ Recap не заканчивается набором цифр. В финале �
 
 Рекомендации и CTA реализованы через backend-controlled redirects: направление перехода определяет backend, а клиент не может передать произвольный URL.
 
+<p align="center">
+  <a href="https://recap50.ru"><strong>🌐 Открыть демо — recap50.ru</strong></a>
+</p>
+
 <img width="1296" height="895" alt="изображение" src="https://github.com/user-attachments/assets/4b4a6570-b2e7-48df-9db1-f845dd1c1c15" />
 
 
