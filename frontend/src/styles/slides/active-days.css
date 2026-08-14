@@ -463,16 +463,18 @@
   .year-board {
     --tilt: 42deg;
     --spin: 28deg;
-    --cell: 14px;
-    --column-gap: 9px;
-    --row-gap: 13px;
-    --base: 5px;
-    --step: 5px;
-    --scene: 320px;
+    --cell: 11px;
+    --column-gap: 7px;
+    --row-gap: 10px;
+    --base: 4px;
+    --step: 4px;
+    --scene: 292px;
+
+    gap: 10px;
   }
 
   .year-board__plate {
-    padding: 18px 20px 22px;
+    padding: 16px 18px 18px 28px;
   }
 
   .year-board__label {

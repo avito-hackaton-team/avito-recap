@@ -669,15 +669,15 @@
   }
 
   .year-board {
-    --cell: 8px;
+    --cell: 7px;
     --column-gap: 4px;
     --row-gap: 5px;
     --base: 3px;
-    --step: 3px;
-    --scene: min(172px, calc(100vw - 72px));
+    --step: 2.5px;
+    --scene: min(168px, calc(100vw - 72px));
     --plate-lift: 0px;
 
-    gap: 4px;
+    gap: 16px;
   }
 
   .year-board__plate {
@@ -725,7 +725,7 @@
     --step: 2.5px;
     --scene: min(132px, calc(100vw - 72px));
 
-    gap: 3px;
+    gap: 11px;
   }
 
   .year-board__plate {
@@ -739,8 +739,8 @@
   }
 
   .year-board__caption {
-    min-height: 30px;
-    padding: 4px 8px;
+    min-height: 26px;
+    padding: 3px 8px;
   }
 
   .year-board__caption-title {
