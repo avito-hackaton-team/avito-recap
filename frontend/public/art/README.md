@@ -5,19 +5,14 @@ Microsoft в 3D-варианте. Их лицензия — **MIT**. Автор�
 в `../../art-prompts.md`; лицензию Fluent Emoji к ним применять нельзя.
 
 Имена основных файлов совпадают с типами слайдов из контракта. Интерфейс
-собирает путь как `/art/<name>.png` без отдельного импорта:
+собирает путь как `/art/<name>.webp` без отдельного импорта. Растровые ассеты хранятся в WebP с альфа-каналом; исходные PNG не дублируются в production.
 
 | Файл | Что это | Оригинал в Fluent Emoji |
 |---|---|---|
-| `intro.png` | хлопушка | Party popper |
-| `purchases.png` | пакеты | Shopping bags |
-| `sales.png` | мешок денег | Money bag |
-| `messages.png` | облачко речи | Speech balloon |
-| `interests.png` | диаграмма | Bar chart |
-| `archetype.png` | лицо с моноклем | Face with monocle |
-| `final.png` | искры | Sparkles |
-| `season-winter.png` | снежинка | Snowflake |
-| `season-spring.png` | росток | Seedling |
-| `season-summer.png` | чемодан | Luggage |
-| `season-autumn.png` | лист | Fallen leaf |
-
+| `messages.webp` | облачко речи | Speech balloon |
+| `interests.webp` | диаграмма | Bar chart |
+| `final.webp` | искры | Sparkles |
+| `season-winter.webp` | снежинка | Snowflake |
+| `season-spring.webp` | росток | Seedling |
+| `season-summer.webp` | чемодан | Luggage |
+| `season-autumn.webp` | лист | Fallen leaf |

@@ -5,7 +5,7 @@ import { BadgeCard } from '../components/BadgeCard';
 import styles from './PublicRecapScreen.module.css';
 
 function artUrl(name: string): string {
-  return `/art/${name}.png`;
+  return `/art/${name}.webp`;
 }
 
 function formatNumber(value: number): string {

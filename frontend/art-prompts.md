@@ -1,7 +1,7 @@
 # Avito Soft 3D — manifest иллюстраций
 
-Единый набор 3D-ассетов для desktop-истории. Текущие `views.png`,
-`active_days.png` и `favorites.png` — референсы серии, а не объекты для прямого
+Единый набор 3D-ассетов для desktop-истории. Текущие `views.webp`,
+`active_days.webp` и `favorites.webp` — референсы серии, а не объекты для прямого
 копирования в следующих генерациях.
 
 ## Зафиксированный стиль
@@ -33,9 +33,9 @@
 
 | Файл | Что брать за образец |
 |---|---|
-| `views.png` | основной эталон камеры, масштаба, синего пластика и контраста |
-| `active_days.png` | эталон округлой конструкции, светлых поверхностей и зелёного акцента |
-| `favorites.png` | эталон кораллового акцента и стопки карточек; не переносить его тёплый серо-красный ореол в остальные ассеты |
+| `views.webp` | основной эталон камеры, масштаба, синего пластика и контраста |
+| `active_days.webp` | эталон округлой конструкции, светлых поверхностей и зелёного акцента |
+| `favorites.webp` | эталон кораллового акцента и стопки карточек; не переносить его тёплый серо-красный ореол в остальные ассеты |
 
 При генерации с референсами прикладывать все три изображения и добавлять:
 
@@ -81,32 +81,27 @@ cropped object, multiple camera angles
 
 | Статус | Файл | `[SUBJECT]` и композиция |
 |---|---|---|
-| reference | `views.png` | a blue smartphone with three simple marketplace listing cards on screen and one large dark magnifying glass leaning across its lower-right edge |
-| reference | `active_days.png` | a chunky blue and off-white desk calendar with three rounded green marker pins, one compact object with a strong silhouette |
-| reference | `favorites.png` | a small offset stack of off-white marketplace listing cards with one oversized coral heart-shaped bookmark in front |
-| integrated | `messages.png` | two overlapping rounded chat bubbles, cyan blue and coral, with a check mark and a small marketplace tag |
-| integrated | `purchases.png` | a cyan shopping bag beside an open off-white parcel containing a rounded table lamp |
-| integrated | `sales.png` | a stack of rounded green banknotes with three gold coins, used as the current sales hero |
-| next | `badge.png` | one premium rounded hexagonal achievement medal in cyan and deep blue with a simple raised star shape and two short coral ribbons, no lettering |
-| next | `badge-sales.png` | one premium rounded sales medal in coral and deep blue with a simple raised price-tag shape and two short cyan ribbons, no lettering |
-| later | `season-winter.png` | one chunky rounded snowflake in cyan and off-white, simplified to six broad arms |
-| later | `season-spring.png` | one young green sprout with two large leaves growing from a rounded off-white pot with a cyan rim |
-| later | `season-summer.png` | one rounded cyan suitcase with a coral handle and a small raised sun shape, no stickers or text |
-| later | `season-autumn.png` | one warm coral lounge chair with two broad floating autumn leaves in violet and muted orange |
-| later | `archetype-collector.png` | a compact display case holding three carefully arranged rounded finds: a small lamp, camera and vase, with cyan structure and coral accents |
-| later | `archetype-explorer.png` | a chunky cyan compass combined with a small magnifying glass, pointing diagonally upward, with a lime-green accent |
-| later | `archetype-negotiator.png` | two rounded speech bubbles meeting around a simple handshake shape, cyan and violet with one coral accent |
-| later | `archetype-dealmaker.png` | a rounded briefcase with a raised checkmark-shaped clasp and one small price tag, deep blue with lime-green and coral accents |
-| optional | `intro.png` | a compact burst of five rounded confetti pieces and two soft stars around one cyan sphere, celebratory but not noisy |
-| integrated | `final.png` | an open off-white personal album containing four simplified marketplace cards, with colored section tabs and small sparkles |
-| optional | `interests.png` | three rounded ascending columns with one broad curved upward arrow, cyan with lime-green highlight, no axes or numbers |
-| optional | `archetype.png` | a rounded magnifying glass hovering over one compact marketplace card stack, cyan and off-white with a coral bookmark |
-| optional | `mascot.png` | a friendly gender-neutral young adult in a cyan hoodie, waist-up, making a heart gesture with both hands; simplified rounded character design matching the same material and camera |
+| reference | `views.webp` | a blue smartphone with three simple marketplace listing cards on screen and one large dark magnifying glass leaning across its lower-right edge |
+| reference | `active_days.webp` | a chunky blue and off-white desk calendar with three rounded green marker pins, one compact object with a strong silhouette |
+| reference | `favorites.webp` | a small offset stack of off-white marketplace listing cards with one oversized coral heart-shaped bookmark in front |
+| integrated | `messages.webp` | two overlapping rounded chat bubbles, cyan blue and coral, with a check mark and a small marketplace tag |
+| integrated | `badge.webp` | one premium rounded hexagonal achievement medal in cyan and deep blue with a simple raised star shape and two short coral ribbons, no lettering |
+| integrated | `badge-sales.webp` | one premium rounded sales medal in coral and deep blue with a simple raised price-tag shape and two short cyan ribbons, no lettering |
+| integrated | `season-winter.webp` | one chunky rounded snowflake in cyan and off-white, simplified to six broad arms |
+| integrated | `season-spring.webp` | one young green sprout with two large leaves growing from a rounded off-white pot with a cyan rim |
+| integrated | `season-summer.webp` | one rounded cyan suitcase with a coral handle and a small raised sun shape, no stickers or text |
+| integrated | `season-autumn.webp` | one warm coral lounge chair with two broad floating autumn leaves in violet and muted orange |
+| integrated | `archetype-collector.webp` | a compact display case holding three carefully arranged rounded finds: a small lamp, camera and vase, with cyan structure and coral accents |
+| integrated | `archetype-explorer.webp` | a chunky cyan compass combined with a small magnifying glass, pointing diagonally upward, with a lime-green accent |
+| integrated | `archetype-negotiator.webp` | two rounded speech bubbles meeting around a simple handshake shape, cyan and violet with one coral accent |
+| integrated | `archetype-dealmaker.webp` | a rounded briefcase with a raised checkmark-shaped clasp and one small price tag, deep blue with lime-green and coral accents |
+| integrated | `final.webp` | an open off-white personal album containing four simplified marketplace cards, with colored section tabs and small sparkles |
+| integrated | `interests.webp` | three rounded ascending columns with one broad curved upward arrow, cyan with lime-green highlight, no axes or numbers |
 
 ## Экспорт и проверка
 
-- формат: `PNG`, `1024×1024`, цветовое пространство `sRGB`, настоящий alpha;
-- хранить исходник отдельно, а delivery-файл после оптимизации желательно
+- исходник генерации: `PNG`, `1024×1024`, цветовое пространство `sRGB`, настоящий alpha;
+- delivery-файл: `WebP` с альфа-каналом; исходник хранить отдельно, а файл после оптимизации желательно
   удерживать в пределах 500 KB без заметной деградации краёв и градиентов;
 - объект занимает примерно 80–88% кадра и не касается краёв;
 - проверить на белом и тёмном фоне: не должно быть прямоугольной подложки,
