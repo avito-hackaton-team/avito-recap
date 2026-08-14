@@ -84,3 +84,4 @@ jobs:
     uses: ./.github/workflows/deploy-production.yml
     with:
       image-tag: ${{ github.sha }}
+    secrets: inherit
