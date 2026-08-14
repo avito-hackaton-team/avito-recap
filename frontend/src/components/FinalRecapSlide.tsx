@@ -21,7 +21,7 @@ const STAT_ART: Record<string, string> = {
 };
 
 function artUrl(name: string): string {
-  return `/art/${name}.png`;
+  return `/art/${name}.webp`;
 }
 
 function formatNumber(value: number): string {

@@ -13,7 +13,7 @@ const SEASON_TITLES: Record<Season, string> = {
 
 /** Все растровые иллюстрации лежат в public/art (источники — в README рядом). */
 function artUrl(name: string): string {
-  return `/art/${name}.png`;
+  return `/art/${name}.webp`;
 }
 
 function formatNumber(value: number): string {
