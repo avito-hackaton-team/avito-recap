@@ -103,12 +103,6 @@ type SubcategoryScore struct {
 	Score float64
 }
 
-// SeasonInterest is the leading category of a single season.
-type SeasonInterest struct {
-	Season   Season
-	Category CategoryScore
-}
-
 // UserActivity holds the counters a recap is built from. Amounts are in kopecks
 // and never leave the service as exact numbers - the API exposes ranges only.
 type UserActivity struct {
@@ -142,9 +136,4 @@ func (a UserActivity) TotalActions() int64 {
 		a.Sales +
 		a.Messages() +
 		a.ListingsCreated
-}
-
-// IsEmpty reports whether there is nothing to build a recap from.
-func (a UserActivity) IsEmpty() bool {
-	return a.ActiveDays == 0
 }
